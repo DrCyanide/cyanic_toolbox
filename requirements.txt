@@ -1,0 +1,4 @@
+numpy
+mediapipe
+scikit-image
+opencv-python
