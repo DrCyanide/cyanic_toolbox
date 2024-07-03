@@ -1,0 +1,158 @@
+{
+    "reference_urls": [
+        "https://ai.google.dev/edge/mediapipe/solutions/vision/pose_landmarker/index#pose_landmarker_model",
+        "https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker/index#models",
+        "https://github.com/google/mediapipe/blob/a908d668c730da128dfa8d9f6bd25d519d006692/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png"
+    ],
+    "desc": "Used to map Mediapipe pose landmark indexes to Rigify. Uses the pointy end of the bone (tail) for name",
+    "pose": [
+        {
+            "index": 0,
+            "name": "nose",
+            "rigify_bone": "nose.001",
+            "vrm_bone": null
+        },
+        {
+            "index": 1,
+            "name": "left eye (inner)",
+            "rigify_bone": "lid.T.L.003",
+            "vrm_bone": null
+        },
+        {
+            "index": 2,
+            "name": "left eye (center)",
+            "rigify_bone": "eye.L",
+            "vrm_bone": "eye.L"
+        },
+        {
+            "index": 3,
+            "name": "left eye (outer)",
+            "rigify_bone": "lid.B.L.003",
+            "vrm_bone": null
+        },
+        {
+            "index": 4,
+            "name": "right eye (inner)",
+            "rigify_bone": "lid.T.R.003",
+            "vrm_bone": null
+        },
+        {
+            "index": 5,
+            "name": "right eye (center)",
+            "rigify_bone": "eye.R",
+            "vrm_bone": "eye.R"
+        },
+        {
+            "index": 6,
+            "name": "right eye (outer)",
+            "rigify_bone": "lid.B.R.003",
+            "vrm_bone": null
+        },
+        {
+            "index": 7,
+            "name": "left ear",
+            "rigify_bone": "ear.L.004",
+            "vrm_bone": null
+        },
+        {
+            "index": 8,
+            "name": "right ear",
+            "rigify_bone": "ear.R.004",
+            "vrm_bone": null
+        },
+        {
+            "index": 9,
+            "name": "mouth (left)",
+            "rigify_bone": "lip.B.L.001",
+            "vrm_bone": null
+        },
+        {
+            "index": 10,
+            "name": "mouth (right)",
+            "rigify_bone": "lip.B.R.001",
+            "vrm_bone": null
+        },
+        {
+            "index": 11,
+            "name": "left shoulder",
+            "rigify_bone": "shoulder.L",
+            "vrm_bone": "shoulder.L"
+        },
+        {
+            "index": 12,
+            "name": "right shoulder",
+            "rigify_bone": "shoulder.R",
+            "vrm_bone": "shoulder.R"
+        },
+        {
+            "index": 13,
+            "name": "left elbow",
+            "rigify_bone": "upper_arm.L",
+            "vrm_bone": "upper_arm.L"
+        },
+        {
+            "index": 14,
+            "name": "right elbow",
+            "rigify_bone": "upper_arm.R",
+            "vrm_bone": "upper_arm.R"
+        },
+        {
+            "index": 15,
+            "name": "left wrist",
+            "rigify_bone": "forearm.L",
+            "vrm_bone": "lower_arm.L"
+        },
+        {
+            "index": 16,
+            "name": "right wrist",
+            "rigify_bone": "forearm.R",
+            "vrm_bone": "lower_arm.R"
+        },
+        {
+            "index": 17,
+            "name": "left pinky",
+            "rigify_bone": "f_pinky.03.L",
+            "vrm_bone": "little_distal.L"
+        },
+        {
+            "index": 18,
+            "name": "right pinky",
+            "rigify_bone": "f_pinky.03.R",
+            "vrm_bone": "little_distal.R"
+        },
+        {
+            "index": 19,
+            "name": "left index",
+            "rigify_bone": "f_index.03.L",
+            "vrm_bone": "index_distal.L"
+        },
+        {
+            "index": 20,
+            "name": "right index",
+            "rigify_bone": "f_index.03.R",
+            "vrm_bone": "index_distal.R"
+        },
+        {
+            "index": 21,
+            "name": "left thumb",
+            "rigify_bone": "thumb.03.L",
+            "vrm_bone": "thumb_distal.L"
+        },
+        {
+            "index": 22,
+            "name": "right thumb",
+            "rigify_bone": "thumb.03.R",
+            "vrm_bone": "thumb_distal.R"
+        },
+        {
+            "index": 23,
+            "name": "left hip",
+            "rigify_bone": "pelvis.L",
+            "vrm_bone": null
+        },
+        "Observation - there's a 50/50 mix on if Head (wide) or Tail (pointy) is a better marker for the joint...",
+        "Need to think about how this will be applied."
+    ],
+    "hand": [],
+    "face": []
+}

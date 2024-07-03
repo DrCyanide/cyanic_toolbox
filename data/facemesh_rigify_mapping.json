@@ -1,0 +1,425 @@
+{
+    "reference_url": "https://github.com/google/mediapipe/blob/a908d668c730da128dfa8d9f6bd25d519d006692/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png",
+    "desc": "Used to construct, edit, and rig a facemesh.",
+    "face_verts": {
+        "desc": "Used to re-build faces if they're prematurely deleted",
+        "eye.R": [
+            [133, 155, 173],
+            [155, 157, 173],
+            [154, 155, 157],
+            [154, 157, 158],
+            [153, 154, 158],
+            [153, 158, 159],
+            [145, 153, 159],
+            [145, 159, 160],
+            [144, 145, 160],
+            [144, 160, 161],
+            [144, 161, 163],
+            [161, 163, 246],
+            [7, 163, 246],
+            [7, 33, 246]
+        ],
+        "eye.L": [
+            [362, 382, 398],
+            [382, 384, 398],
+            [381, 382, 384],
+            [381, 384, 385],
+            [380, 381, 385],
+            [380, 385, 386],
+            [374, 380, 386],
+            [374, 386, 387],
+            [373, 374, 387],
+            [373, 387, 388],
+            [373, 388, 390],
+            [388, 390, 466],
+            [249, 390, 466],
+            [249, 263, 466]
+        ],
+        "mouth": [
+            [308, 324, 415],
+            [310, 324, 415],
+            [310, 318, 324],
+            [310, 311, 318],
+            [311, 318, 402],
+            [311, 312, 402],
+            [312, 317, 402],
+            [13, 312, 317],
+            [13, 14, 317],
+            [13, 14, 87],
+            [13, 82, 87],
+            [82, 87, 178],
+            [81, 82, 178],
+            [81, 88, 178],
+            [80, 81, 88],
+            [80, 88, 95],
+            [80, 95, 191],
+            [78, 95, 191]
+        ]
+    },
+    "edge_verts": {
+        "desc": "Used to delete the edges when removing eyes",
+        "eye.R": [
+            [155, 173],
+            [155, 157],
+            [154, 157],
+            [154, 158],
+            [153, 158],
+            [153, 159],
+            [145, 159],
+            [145, 160],
+            [144, 160],
+            [144, 161],
+            [161, 163],
+            [163, 246],
+            [7, 246]
+        ],
+        "eye.L": [
+            [382, 398],
+            [382, 384],
+            [381, 384],
+            [381, 385],
+            [380, 385],
+            [380, 386],
+            [374, 386],
+            [374, 387],
+            [373, 387],
+            [373, 388],
+            [388, 390],
+            [390, 466],
+            [249, 466]
+        ],
+        "mouth": [
+            [324, 415],
+            [310, 324],
+            [310, 318],
+            [311, 318],
+            [311, 402],
+            [312, 402],
+            [312, 317],
+            [13, 317],
+            [13, 14],
+            [13, 87],
+            [82, 87],
+            [82, 178],
+            [81, 178],
+            [81, 88],
+            [80, 88],
+            [80, 95],
+            [95, 191]
+        ]
+    },
+    "midpoint_verts": {
+        "desc": "Verts used to find the midpoint of the opening",
+        "eye.R": {
+            "horizontal": [33, 133],
+            "vertical": [159, 145]
+        },
+        "eye.L": {
+            "horizontal": [362, 263],
+            "vertical": [386, 374]
+        },
+        "mouth": {
+            "horizontal": [78, 308],
+            "vertical": [13, 14]
+        }
+    },
+    "bone_positions": {
+        "desc": "Maps the Rigify Metarig bone name to the index of the verts on a facemesh",
+        "jaw": {
+            "tail": 175,
+            "head": null
+        },
+        "jaw.L": {
+            "tail": 435,
+            "head": 447
+        },
+        "jaw.L.001": {
+            "tail": 395,
+            "head": 435
+        },
+        "jaw.R": {
+            "tail": 215,
+            "head": 227
+        },
+        "jaw.R.001": {
+            "tail": 170,
+            "head": 215
+        },
+        "temple.L": {
+            "tail": 447,
+            "head": 389
+        },
+        "temple.R": {
+            "tail": 227,
+            "head": 162
+        },
+        "chin": {
+            "tail": 200,
+            "head": 175
+        },
+        "chin.001": {
+            "tail": 17,
+            "head": 200
+        },
+        "chin.L": {
+            "tail": 291,
+            "head": 395
+        },
+        "chin.R": {
+            "tail": 61,
+            "head": 170
+        },
+        "lip.B.L": {
+            "tail": 404,
+            "head": 16
+        },
+        "lip.B.L.001": {
+            "tail": 291,
+            "head": 404
+        },
+        "lip.B.R": {
+            "tail": 180,
+            "head": 16
+        },
+        "lip.B.R.001": {
+            "tail": 61,
+            "head": 180
+        },
+        "lip.T.L": {
+            "tail": 303,
+            "head": 11
+        },
+        "lip.T.L.001": {
+            "tail": 291,
+            "head": 303
+        },
+        "lip.T.R": {
+            "tail": 73,
+            "head": 11
+        },
+        "lip.T.R.001": {
+            "tail": 61,
+            "head": 73
+        },
+        "cheek.B.L": {
+            "tail": 352,
+            "head": 291
+        },
+        "cheek.B.L.001": {
+            "tail": 264,
+            "head": 352
+        },
+        "cheek.B.R": {
+            "tail": 123,
+            "head": 61
+        },
+        "cheek.B.R.001": {
+            "tail": 34,
+            "head": 123
+        },
+        "cheek.T.L": {
+            "tail": 347,
+            "head": 264
+        },
+        "cheek.T.L.001": {
+            "tail": 464,
+            "head": 347
+        },
+        "cheek.T.R": {
+            "tail": 118,
+            "head": 34
+        },
+        "cheek.T.R.001": {
+            "tail": 244,
+            "head": 118
+        },
+        "brow.T.L": {
+            "tail": 301,
+            "head": 264
+        },
+        "brow.T.L.001": {
+            "tail": 334,
+            "head": 301
+        },
+        "brow.T.L.002": {
+            "tail": 336,
+            "head": 334
+        },
+        "brow.T.L.003": {
+            "tail": 168,
+            "head": 336
+        },
+        "brow.T.R": {
+            "tail": 71,
+            "head": 34
+        },
+        "brow.T.R.001": {
+            "tail": 105,
+            "head": 71
+        },
+        "brow.T.R.002": {
+            "tail": 107,
+            "head": 105
+        },
+        "brow.T.R.003": {
+            "tail": 168,
+            "head": 107
+        },
+        "forehead.L": {
+            "tail": 336,
+            "head": 338
+        },
+        "forehead.L.001": {
+            "tail": 334,
+            "head": 332
+        },
+        "forehead.L.002": {
+            "tail": 301,
+            "head": 284
+        },
+        "forehead.R": {
+            "tail": 107,
+            "head": 109
+        },
+        "forehead.R.001": {
+            "tail": 105,
+            "head": 103
+        },
+        "forehead.R.002": {
+            "tail": 71,
+            "head": 54
+        },
+        "nose": {
+            "tail": 6,
+            "head": 168
+        },
+        "nose.001": {
+            "tail": 4,
+            "head": 6
+        },
+        "nose.002": {
+            "tail": 19,
+            "head": 4
+        },
+        "nose.003": {
+            "tail": 2,
+            "head": 19
+        },
+        "nose.004": {
+            "tail": 164,
+            "head": 2
+        },
+        "nose.L": {
+            "tail": 358,
+            "head": 464
+        },
+        "nose.L.001": {
+            "tail": 4,
+            "head": 358
+        },
+        "nose.R": {
+            "tail": 129,
+            "head": 244
+        },
+        "nose.R.001": {
+            "tail": 4,
+            "head": 129
+        },
+        "lid.B.L": {
+            "tail": 381,
+            "head": 463
+        },
+        "lid.B.L.001": {
+            "tail": 374,
+            "head": 381
+        },
+        "lid.B.L.002": {
+            "tail": 390,
+            "head": 374
+        },
+        "lid.B.L.003": {
+            "tail": 359,
+            "head": 390
+        },
+        "lid.T.L": {
+            "tail": 388,
+            "head": 359
+        },
+        "lid.T.L.001": {
+            "tail": 386,
+            "head": 388
+        },
+        "lid.T.L.002": {
+            "tail": 384,
+            "head": 386
+        },
+        "lid.T.L.003": {
+            "tail": 463,
+            "head": 384
+        },
+        "lid.B.R": {
+            "tail": 154,
+            "head": 243
+        },
+        "lid.B.R.001": {
+            "tail": 145,
+            "head": 154
+        },
+        "lid.B.R.002": {
+            "tail": 163,
+            "head": 145
+        },
+        "lid.B.R.003": {
+            "tail": 130,
+            "head": 163
+        },
+        "lid.T.R": {
+            "tail": 161,
+            "head": 130
+        },
+        "lid.T.R.001": {
+            "tail": 159,
+            "head": 161
+        },
+        "lid.T.R.002": {
+            "tail": 157,
+            "head": 159
+        },
+        "lid.T.R.003": {
+            "tail": 243,
+            "head": 157
+        },
+        "brow.B.L": {
+            "tail": 445,
+            "head": 353
+        },
+        "brow.B.L.001": {
+            "tail": 443,
+            "head": 445
+        },
+        "brow.B.L.002": {
+            "tail": 442,
+            "head": 443
+        },
+        "brow.B.L.003": {
+            "tail": 441,
+            "head": 442
+        },
+        "brow.B.R": {
+            "tail": 225,
+            "head": 124
+        },
+        "brow.B.R.001": {
+            "tail": 223,
+            "head": 225
+        },
+        "brow.B.R.002": {
+            "tail": 222,
+            "head": 223
+        },
+        "brow.B.R.003": {
+            "tail": 221,
+            "head": 222
+        }
+    }
+}
