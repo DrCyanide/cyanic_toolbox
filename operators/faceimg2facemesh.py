@@ -3,27 +3,41 @@ import os
 import json
 import math
 
-try:
-    import numpy as np
-    import mediapipe as mp
-    import skimage
-    from skimage.transform import PiecewiseAffineTransform, warp
-except:
-    # One or more dependency still needed
-    import pip
-    modules = [
-        'numpy',
-        'mediapipe',
-        'scikit-image', #skimage
-    ]
+import importlib
+from collections import namedtuple
+Dependency = namedtuple("Dependency", ["module", "package", "name"])
+dependencies = (
+    Dependency(module="numpy", package=None, name='np'),
+    Dependency(module="skimage", package="scikit-image", name=None),
+    Dependency(module="mediapipe", package=None, name=None),
+)
+dependencies_imported = False
 
-    for mod in modules:
-        pip.main(['install', mod, '--user'])
+def import_module(module_name, global_name, reload=True):
+    """
+    Import a module.
+    :param module_name: Module to import.
+    :param global_name: (Optional) Name under which the module is imported. If None the module_name will be used.
+        This allows to import under a different name with the same effect as e.g. "import numpy as np" where "np" is
+        the global_name under which the module can be accessed.
+    :raises: ImportError and ModuleNotFoundError
+    """
+    if global_name is None:
+        global_name = module_name
     
-    import numpy as np
-    import mediapipe as mp
-    import skimage
-    from skimage.transform import PiecewiseAffineTransform, warp
+    if global_name in globals():
+        importlib.reload(globals()[global_name])
+    else:
+        # Attempt to import the module and assign it to globals dictionary. This allow to access the module under
+        # the given name, just like the regular import would.
+        globals()[global_name] = importlib.import_module(module_name)
+
+def import_dependencies():
+    global dependencies_imported
+    if not dependencies_imported:
+        for dependency in dependencies:
+            import_module(dependency.module, dependency.name)
+        dependencies_imported = True
 
 
 class FaceImg2FacemeshOperator(bpy.types.Operator):
@@ -42,8 +56,14 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
     uv_map = None
 
     def execute(self, context):
+        import_dependencies()
         # Read img from context.scene.cyanic_img_path
         self.img_path = context.scene.cyanic_img_path
+
+        if len(self.img_path) == 0 or not os.path.exists(self.img_path):
+            self.report({'ERROR_INVALID_INPUT'}, 'Please select an image (jpg/jpeg work best)')
+            return {'CANCELLED'}
+
         self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
         filename =  os.path.splitext(os.path.basename(self.img_path))[0] # the name without the extension
         self.obj_name =  "%s.obj" % filename
@@ -265,7 +285,7 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
 
         H,W,_ = self.img.shape
         # run facial landmark detection
-        with mp.solutions.face_mesh.FaceMesh(
+        with mediapipe.solutions.face_mesh.FaceMesh(
                 static_image_mode=True,
                 refine_landmarks=True,
                 max_num_faces=1,
@@ -308,9 +328,9 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
         H_new,W_new = 512,512
         keypoints_uv = np.array([(W_new*x, H_new*y) for x,y in self.uv_map])
 
-        tform = PiecewiseAffineTransform()
+        tform = skimage.transform.PiecewiseAffineTransform()
         tform.estimate(keypoints_uv,self.keypoints)
-        self.texture = warp(self.img, tform, output_shape=(H_new,W_new))
+        self.texture = skimage.transform.warp(self.img, tform, output_shape=(H_new,W_new))
         self.texture = (255*self.texture).astype(np.uint8)
 
     def landmarks_to_3d(self):

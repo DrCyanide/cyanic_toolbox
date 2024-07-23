@@ -2,25 +2,57 @@ import bpy
 import mathutils
 import os
 
-try:
-    import numpy as np
-    import mediapipe as mp
-    import cv2
-except:
-    # One or more dependency still needed
-    import pip
-    modules = [
-        'numpy',
-        'mediapipe',
-        'opencv-python'
-    ]
+# try:
+#     import mediapipe
+#     import cv2
+# except:
+#     # One or more dependency still needed
+#     import pip
+#     modules = [
+#         'mediapipe',
+#         'opencv-python'
+#     ]
 
-    for mod in modules:
-        pip.main(['install', mod, '--user'])
+#     for mod in modules:
+#         pip.main(['install', mod, '--user'])
     
-    import numpy as np
-    import mediapipe as mp
-    import cv2
+#     import mediapipe
+#     import cv2
+
+import importlib
+from collections import namedtuple
+Dependency = namedtuple("Dependency", ["module", "package", "name"])
+dependencies = (
+    Dependency(module="cv2", package="opencv-python", name=None),
+    Dependency(module="mediapipe", package=None, name=None),
+)
+dependencies_imported = False
+
+def import_module(module_name, global_name, reload=True):
+    """
+    Import a module.
+    :param module_name: Module to import.
+    :param global_name: (Optional) Name under which the module is imported. If None the module_name will be used.
+        This allows to import under a different name with the same effect as e.g. "import numpy as np" where "np" is
+        the global_name under which the module can be accessed.
+    :raises: ImportError and ModuleNotFoundError
+    """
+    if global_name is None:
+        global_name = module_name
+    
+    if global_name in globals():
+        importlib.reload(globals()[global_name])
+    else:
+        # Attempt to import the module and assign it to globals dictionary. This allow to access the module under
+        # the given name, just like the regular import would.
+        globals()[global_name] = importlib.import_module(module_name)
+
+def import_dependencies():
+    global dependencies_imported
+    if not dependencies_imported:
+        for dependency in dependencies:
+            import_module(dependency.module, dependency.name)
+        dependencies_imported = True
 
 
 class GenRigFromMetaRigOperator(bpy.types.Operator):
@@ -29,6 +61,7 @@ class GenRigFromMetaRigOperator(bpy.types.Operator):
     bl_label = "GenRigFromMetaRig"
 
     def execute(self, context):
+        import_dependencies()
         if context.scene.cyanic_rigify_gen_rig is None:
             self.report({'ERROR_INVALID_INPUT'}, 'No Rigify metarig selected')
             return {'CANCELLED'}
@@ -77,7 +110,7 @@ class MocapOperator(bpy.types.Operator):
             context.scene.cyanic_mocap_file_path = 'data/test_pose.jpg'
             file_path = context.scene.cyanic_mocap_file_path
 
-        mp_holistic = mp.solutions.holistic
+        mp_holistic = mediapipe.solutions.holistic
         # Set what kind of media is being used
         static_image_mode = True 
         model_complexity = 2 # 0 for fastest, 2 for most detailed, 1 for middle ground
