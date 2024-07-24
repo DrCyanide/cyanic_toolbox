@@ -120,9 +120,25 @@ def install_and_import_module(module_name, package_name=None, global_name=None):
     import_module(module_name, global_name)
 
 
+def uninstall_module(module_name, package_name=None):
+    # Same idea as install, just with different pip args
+    if package_name is None:
+        package_name = module_name
+    # Create a copy of the environment variables and modify them for the subprocess call
+    environ_copy = dict(os.environ)
+    environ_copy["PYTHONNOUSERSITE"] = "1"
+
+    # Need to scan package name for '==', because that's only to install the correct 
+    if '==' in package_name:
+        package_name = package_name.split('==')[0]
+
+    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", package_name], check=True, env=environ_copy)
+
+
+
 class CYANIC_OT_install_dependencies(bpy.types.Operator):
     bl_idname = "cyanic.install_dependencies"
-    bl_label = "Install dependencies"
+    bl_label = "Install all dependencies"
     bl_description = ("Downloads and installs the required python packages for this add-on. "
                       "Internet connection is requred. Blender may have to be started with "
                       "elevated permissions ('Run as administrator') in order to install"
@@ -156,6 +172,50 @@ class CYANIC_OT_install_dependencies(bpy.types.Operator):
             bpy.utils.register_class(cls)
 
         return {"FINISHED"}
+
+class CYANIC_OT_install_single_dependency(bpy.types.Operator):
+    bl_idname = "cyanic.install_single_dependency"
+    bl_label = "Install"
+    bl_description = "Install a single dependency"
+    bl_options = {"REGISTER", "INTERNAL"} # IDK if this is needed or not
+
+    dependency = None
+    module_name = bpy.props.StringProperty()
+    package_name = bpy.props.StringProperty()
+    global_name = bpy.props.StringProperty()
+
+    def execute(self, context):
+        if self.dependency is None:
+            return {'CANCELLED'}
+        try:
+            install_and_import_module(module_name=self.dependency.module,
+                                      package_name=self.dependency.package,
+                                      global_name=self.dependency.name)
+        except (subprocess.CalledProcessError, ImportError) as err:
+            self.report({'ERROR'}, str(err))
+            return {"CANCELLED"}
+        return {'FINISHED'}
+    
+class CYANIC_OT_uninstall_single_dependency(bpy.types.Operator):
+    bl_idname = "cyanic.uninstall_single_dependency"
+    bl_label = "Uninstall"
+    bl_description = "Uninstall a single dependency"
+    bl_options = {"REGISTER", "INTERNAL"} # IDK if this is needed or not
+
+    dependency = None
+    module_name = bpy.props.StringProperty()
+    package_name = bpy.props.StringProperty()
+
+    def execute(self, context):
+        if self.dependency is None:
+            return {'CANCELLED'}
+        try:
+            uninstall_module(module_name=self.dependency.module,
+                             package_name=self.dependency.package)
+        except (subprocess.CalledProcessError, ImportError) as err:
+            self.report({'ERROR'}, str(err))
+            return {"CANCELLED"}
+        return {'FINISHED'}
 
 
 class CYANIC_PT_warning_panel(bpy.types.Panel):
@@ -192,11 +252,57 @@ class CYANIC_preferences(bpy.types.AddonPreferences):
     # The preferences in Preferences > Add-ons > Cyanic Toolbox
     bl_idname = __name__
 
+    header_names = ["Module", "Version", ""]
+
+    def draw_dependency(self, dependency, dependency_box):
+        # module name, version, install/remove button
+        # Check if installed
+        installed = False
+        global_name = dependency.module
+        if dependency.name is not None:
+            global_name = dependency.name
+        if global_name in globals():
+            installed = True
+
+        _d_box = dependency_box.box()
+        box_split = _d_box.split()
+        cols = [box_split.column(align=False) for _ in range(len(CYANIC_preferences.header_names))]
+        # Module Name
+        cols[0].label(text=dependency.module)
+
+        # Version
+        if installed:
+            cols[1].label(text=globals()[global_name].__version__)
+        else:
+            cols[1].label(text='Not Installed')
+
+        # Install/Remove button
+        if installed:
+            cols[-1].label(text="Uninstall (WIP)")
+            # operator = cols[-1].operator(CYANIC_OT_uninstall_single_dependency.bl_idname)
+            # operator.dependency = dependency
+            # operator.module_name = dependency.module
+        else:
+            cols[-1].label(text="Install (WIP)")
+            # operator = cols[-1].operator(CYANIC_OT_install_single_dependency.bl_idname)
+            # operator.dependency = dependency
+            # operator.module_name = dependency.module
+
     def draw(self, context):
         layout = self.layout
         layout.operator(CYANIC_OT_install_dependencies.bl_idname, icon="CONSOLE")
         # TODO: Add a table with the list of dependencies and their version numbers for troubleshooting.
-        
+        # dependency box
+        dependency_box = layout.box()
+        dependency_box.label(text="Add-on Dependencies")
+
+        headers = dependency_box.split()
+        for name in CYANIC_preferences.header_names:
+            col = headers.column()
+            col.label(text=name)
+        for dependency in dependencies:
+            self.draw_dependency(dependency, dependency_box)
+
 
 def armature_bone_count_match(_, obj):
     rigify_bone_count = 159 # How many bones a rigify rig has.
@@ -220,10 +326,13 @@ def valid_metarig(_, obj):
     return obj.users > 0 and 'rigify_target_rig' in dir(obj) and armature_face_bones_match(_, obj)
 
 # Classes used to set up the Add-on preferences / install messages
+# I'd like to move these to their own files, but the shared global variables need consideration
 preference_classes = [
     CYANIC_PT_warning_panel,
     CYANIC_OT_install_dependencies,
-    CYANIC_preferences
+    CYANIC_OT_install_single_dependency,
+    CYANIC_OT_uninstall_single_dependency,
+    CYANIC_preferences,
 ]
 
 def register():
