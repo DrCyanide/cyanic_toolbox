@@ -37,7 +37,7 @@ bl_info = {
 # https://github.com/robertguetzkow/blender-python-examples/blob/4a3c99a843305b91e05db386559905b23cf6eb87/add-ons/install-dependencies/install-dependencies.py
 Dependency = namedtuple("Dependency", ["module", "package", "name"])
 dependencies = (
-    Dependency(module="numpy", package=None, name='np'),
+    Dependency(module="numpy", package="numpy==1.26.4", name='np'), # numpy 2.0 had just released, and wasn't compatible with mediapipe yet
     Dependency(module="skimage", package="scikit-image", name=None),
     Dependency(module="cv2", package="opencv-python", name=None),
     Dependency(module="mediapipe", package=None, name=None),
@@ -195,6 +195,8 @@ class CYANIC_preferences(bpy.types.AddonPreferences):
     def draw(self, context):
         layout = self.layout
         layout.operator(CYANIC_OT_install_dependencies.bl_idname, icon="CONSOLE")
+        # TODO: Add a table with the list of dependencies and their version numbers for troubleshooting.
+        
 
 def armature_bone_count_match(_, obj):
     rigify_bone_count = 159 # How many bones a rigify rig has.
