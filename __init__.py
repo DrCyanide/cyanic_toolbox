@@ -158,14 +158,6 @@ class CYANIC_OT_install_dependencies(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class CYANIC_preferences(bpy.types.AddonPreferences):
-    bl_idname = __name__
-
-    def draw(self, context):
-        layout = self.layout
-        layout.operator(CYANIC_OT_install_dependencies.bl_idname, icon="CONSOLE")
-
-
 class CYANIC_PT_warning_panel(bpy.types.Panel):
     bl_label = "Warning"
     bl_category = "Cyanic"
@@ -196,6 +188,14 @@ class CYANIC_PT_warning_panel(bpy.types.Panel):
         for line in lines:
             layout.label(text=line)
 
+class CYANIC_preferences(bpy.types.AddonPreferences):
+    # The preferences in Preferences > Add-ons > Cyanic Toolbox
+    bl_idname = __name__
+
+    def draw(self, context):
+        layout = self.layout
+        layout.operator(CYANIC_OT_install_dependencies.bl_idname, icon="CONSOLE")
+
 def armature_bone_count_match(_, obj):
     rigify_bone_count = 159 # How many bones a rigify rig has.
     # return len(obj.bones) == rigify_bone_count
@@ -217,6 +217,12 @@ def armature_face_bones_match(_, obj):
 def valid_metarig(_, obj):
     return obj.users > 0 and 'rigify_target_rig' in dir(obj) and armature_face_bones_match(_, obj)
 
+# Classes used to set up the Add-on preferences / install messages
+preference_classes = [
+    CYANIC_PT_warning_panel,
+    CYANIC_OT_install_dependencies,
+    CYANIC_preferences
+]
 
 def register():
     bpy.types.Scene.cyanic_img_path = bpy.props.StringProperty(
@@ -286,8 +292,8 @@ def register():
     global dependencies_installed
     dependencies_installed = False
 
-    # Add the warning panel. If the dependencies are all installed, it'll hide itself.
-    bpy.utils.register_class(CYANIC_PT_warning_panel)
+    for cls in preference_classes:
+        bpy.utils.register_class(cls)
 
     try:
         for dependency in dependencies:
@@ -314,8 +320,8 @@ def unregister():
     del bpy.types.Scene.cyanic_source_input
     del bpy.types.Scene.cyanic_mocap_file_path
 
-    # Remove the warning panel
-    bpy.utils.unregister_class(CYANIC_PT_warning_panel)
+    for cls in preference_classes:
+        bpy.utils.unregister_class(cls)
 
     for cls in operator_classes:
         bpy.utils.unregister_class(cls)

@@ -2,23 +2,6 @@ import bpy
 import mathutils
 import os
 
-# try:
-#     import mediapipe
-#     import cv2
-# except:
-#     # One or more dependency still needed
-#     import pip
-#     modules = [
-#         'mediapipe',
-#         'opencv-python'
-#     ]
-
-#     for mod in modules:
-#         pip.main(['install', mod, '--user'])
-    
-#     import mediapipe
-#     import cv2
-
 import importlib
 from collections import namedtuple
 Dependency = namedtuple("Dependency", ["module", "package", "name"])
