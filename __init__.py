@@ -35,6 +35,8 @@ bl_info = {
 
 # The dependency install code is based off of this github example
 # https://github.com/robertguetzkow/blender-python-examples/blob/4a3c99a843305b91e05db386559905b23cf6eb87/add-ons/install-dependencies/install-dependencies.py
+# And off of BlendARMocap's dependencies list
+# https://github.com/cgtinker/BlendArMocap/blob/ecb4c91c01befbe29b75196eb72321867810ddf0/src/cgt_mediapipe/cgt_mp_preferences.py#L53
 Dependency = namedtuple("Dependency", ["module", "package", "name"])
 dependencies = (
     Dependency(module="numpy", package="numpy==1.26.4", name='np'), # numpy 2.0 had just released, and wasn't compatible with mediapipe yet
@@ -248,10 +250,13 @@ class CYANIC_PT_warning_panel(bpy.types.Panel):
                  f"2. Search for the \"{bl_info.get('name')}\" add-on.",
                  f"3. Open the details section of the add-on.",
                  f"4. Click on the \"{CYANIC_OT_install_dependencies.bl_label}\" button.",
-                 f"   This will download and install the missing Python packages, if Blender has the required",
-                 f"   permissions.",
-                 f"If you're attempting to run the add-on from the text editor, you won't see the options described",
-                 f"above. Please install the add-on properly through the preferences.",
+                 f"   This will download and install the missing Python packages",
+                 f"   if Blender has the required permissions. Run as Administrator,",
+                 f"   or try using the portable version of Blender.",
+                 f"",
+                 f"If you're attempting to run the add-on from the text editor, ",
+                 f"you won't see the options described above. Please install",
+                 f"the add-on properly through the preferences.",
                  f"1. Open the add-on preferences (Edit > Preferences > Add-ons).",
                  f"2. Press the \"Install\" button.",
                  f"3. Search for the add-on file.",
@@ -318,6 +323,22 @@ class CYANIC_preferences(bpy.types.AddonPreferences):
         for dependency in dependencies:
             self.draw_dependency(dependency, dependency_box)
 
+# Classes used to set up the Add-on preferences / install messages
+# I'd like to move these to their own files, but the shared global variables need consideration
+preference_classes = [
+    CYANIC_PT_warning_panel,
+    CYANIC_OT_install_dependencies,
+    CYANIC_OT_install_single_dependency,
+    CYANIC_OT_uninstall_single_dependency,
+    CYANIC_preferences,
+]
+
+
+# ------------------------------------------------
+# That's the end of the Add-on preferences.
+# Everything below here should be for prop definitions
+# ------------------------------------------------
+
 
 def armature_bone_count_match(_, obj):
     rigify_bone_count = 159 # How many bones a rigify rig has.
@@ -340,15 +361,6 @@ def armature_face_bones_match(_, obj):
 def valid_metarig(_, obj):
     return obj.users > 0 and 'rigify_target_rig' in dir(obj) and armature_face_bones_match(_, obj)
 
-# Classes used to set up the Add-on preferences / install messages
-# I'd like to move these to their own files, but the shared global variables need consideration
-preference_classes = [
-    CYANIC_PT_warning_panel,
-    CYANIC_OT_install_dependencies,
-    CYANIC_OT_install_single_dependency,
-    CYANIC_OT_uninstall_single_dependency,
-    CYANIC_preferences,
-]
 
 def register():
     bpy.types.Scene.cyanic_img_path = bpy.props.StringProperty(
