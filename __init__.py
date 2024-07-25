@@ -97,9 +97,9 @@ def install_and_import_module(module_name, package_name=None, global_name=None):
         the global_name under which the module can be accessed.
     :raises: subprocess.CalledProcessError and ImportError
     """
-    if package_name is None:
+    if package_name is None or len(package_name) == 0:
         package_name = module_name
-    if global_name is None:
+    if global_name is None or len(package_name) == 0:
         global_name = module_name
 
     
@@ -119,11 +119,15 @@ def install_and_import_module(module_name, package_name=None, global_name=None):
     # The installation succeeded, attempt to import the module again
     import_module(module_name, global_name)
 
+    # Update the installed dependencies table
 
-def uninstall_module(module_name, package_name=None):
+
+def uninstall_module(module_name, package_name='', global_name=''):
     # Same idea as install, just with different pip args
-    if package_name is None:
+    if len(package_name) == 0:
         package_name = module_name
+    if len(global_name) == 0:
+        global_name = module_name
     # Create a copy of the environment variables and modify them for the subprocess call
     environ_copy = dict(os.environ)
     environ_copy["PYTHONNOUSERSITE"] = "1"
@@ -132,8 +136,14 @@ def uninstall_module(module_name, package_name=None):
     if '==' in package_name:
         package_name = package_name.split('==')[0]
 
-    subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", package_name], check=True, env=environ_copy)
-
+    try:
+        subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", package_name], check=True, env=environ_copy) 
+    except subprocess.CalledProcessError as e:
+        # Keep getting a exit status of 2, even though it's working correctly.
+        pass
+    
+    # Remove the dependency from the imports
+    del globals()[global_name]
 
 
 class CYANIC_OT_install_dependencies(bpy.types.Operator):
@@ -179,18 +189,18 @@ class CYANIC_OT_install_single_dependency(bpy.types.Operator):
     bl_description = "Install a single dependency"
     bl_options = {"REGISTER", "INTERNAL"} # IDK if this is needed or not
 
-    dependency = None
-    module_name = bpy.props.StringProperty()
-    package_name = bpy.props.StringProperty()
-    global_name = bpy.props.StringProperty()
+    # dependency = None
+    module_name : bpy.props.StringProperty('')
+    package_name : bpy.props.StringProperty('')
+    global_name : bpy.props.StringProperty('')
 
     def execute(self, context):
-        if self.dependency is None:
+        if self.module_name is None or len(self.module_name) == 0:
             return {'CANCELLED'}
         try:
-            install_and_import_module(module_name=self.dependency.module,
-                                      package_name=self.dependency.package,
-                                      global_name=self.dependency.name)
+            install_and_import_module(module_name=self.module_name,
+                                      package_name=self.package_name,
+                                      global_name=self.global_name)
         except (subprocess.CalledProcessError, ImportError) as err:
             self.report({'ERROR'}, str(err))
             return {"CANCELLED"}
@@ -203,15 +213,17 @@ class CYANIC_OT_uninstall_single_dependency(bpy.types.Operator):
     bl_options = {"REGISTER", "INTERNAL"} # IDK if this is needed or not
 
     dependency = None
-    module_name = bpy.props.StringProperty()
-    package_name = bpy.props.StringProperty()
+    module_name : bpy.props.StringProperty('')
+    package_name : bpy.props.StringProperty('')
+    global_name : bpy.props.StringProperty('')
 
     def execute(self, context):
-        if self.dependency is None:
+        if self.module_name is None or len(self.module_name) == 0:
             return {'CANCELLED'}
         try:
-            uninstall_module(module_name=self.dependency.module,
-                             package_name=self.dependency.package)
+            uninstall_module(module_name=self.module_name,
+                             package_name=self.package_name,
+                             global_name=self.global_name)
         except (subprocess.CalledProcessError, ImportError) as err:
             self.report({'ERROR'}, str(err))
             return {"CANCELLED"}
@@ -258,9 +270,12 @@ class CYANIC_preferences(bpy.types.AddonPreferences):
         # module name, version, install/remove button
         # Check if installed
         installed = False
+        package_name = dependency.package
         global_name = dependency.module
         if dependency.name is not None:
             global_name = dependency.name
+        if dependency.package is None:
+            package_name = ''
         if global_name in globals():
             installed = True
 
@@ -278,15 +293,15 @@ class CYANIC_preferences(bpy.types.AddonPreferences):
 
         # Install/Remove button
         if installed:
-            cols[-1].label(text="Uninstall (WIP)")
-            # operator = cols[-1].operator(CYANIC_OT_uninstall_single_dependency.bl_idname)
-            # operator.dependency = dependency
-            # operator.module_name = dependency.module
+            operator = cols[-1].operator(CYANIC_OT_uninstall_single_dependency.bl_idname)
+            operator.module_name = dependency.module
+            operator.package_name = package_name
+            # No global name needed
         else:
-            cols[-1].label(text="Install (WIP)")
-            # operator = cols[-1].operator(CYANIC_OT_install_single_dependency.bl_idname)
-            # operator.dependency = dependency
-            # operator.module_name = dependency.module
+            operator = cols[-1].operator(CYANIC_OT_install_single_dependency.bl_idname)
+            operator.module_name = dependency.module
+            operator.package_name = package_name
+            operator.global_name = global_name
 
     def draw(self, context):
         layout = self.layout
