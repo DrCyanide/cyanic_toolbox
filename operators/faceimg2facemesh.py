@@ -64,7 +64,53 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
             self.report({'ERROR_INVALID_INPUT'}, 'Please select an image (jpg/jpeg work best)')
             return {'CANCELLED'}
 
-        self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
+        # Determine save path
+        addon_prefs = bpy.context.preferences.addons
+        if 'cyanic_toolbox' in addon_prefs.keys():
+            cyanic_prefs = addon_prefs['cyanic_toolbox'].preferences
+            fallback_to_img_path = False
+            fallback_to_custom_path = False
+            fallback_to_last_resort = False
+
+            # Choose where to save the facemesh files based on user preferences
+            if cyanic_prefs.save_dir is 'BLEND_DIR':
+                # Check if the file has been saved already, and save to that directory
+                blend_path = bpy.data.filepath
+                if len(blend_path) > 0:
+                    self.save_dir = os.path.split(blend_path)[0]
+                else:
+                    # Not saved, fallback to another option
+                    fallback_to_custom_path = True
+
+            if cyanic_prefs.save_dir is 'CUSTOM_DIR' or fallback_to_custom_path:
+                # Try to save to a specified custom directory
+                if not os.path.isdir(cyanic_prefs.custom_path):
+                    # 4.1 has a bug where it can append "Documents" or the username to the end of the path when it's selected
+                    # https://projects.blender.org/blender/blender/issues/123471
+                    # Attempt to fix it
+                    fixed_path = os.path.sep.join(cyanic_prefs.custom_path.split(os.path.sep)[:-1])
+                    if os.path.isdir(fixed_path):
+                        bpy.context.preferences.addons['cyanic_toolbox'].preferences.custom_path = fixed_path
+                        cyanic_prefs = addon_prefs['cyanic_toolbox'].preferences
+                    else:
+                        fallback_to_img_path = True
+
+                if not fallback_to_img_path: # The custom path either was fine or was fixed
+                    self.save_dir = cyanic_prefs.custom_path
+
+            if cyanic_prefs.save_dir is 'IMG_DIR' or fallback_to_img_path:
+                # Worst case scenario - save to the directory the source image was in.
+                if len(self.img_path) > 0:
+                    self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
+                else:
+                    fallback_to_last_resort = True
+
+            # If pasted image, and there's no custom path, and it's not saved... 
+            if len(self.save_dir) == 0 or fallback_to_last_resort:
+                import pathlib
+                self.save_dir = os.path.join('%s' % pathlib.Path.home(), 'cyanic_face_meshes') # C:\Users\Username\cyanic_face_meshes on Windows
+
+        # self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
         filename =  os.path.splitext(os.path.basename(self.img_path))[0] # the name without the extension
         self.obj_name =  "%s.obj" % filename
         self.texture_name = ".%s_texture.jpg" % filename
@@ -292,28 +338,35 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
                 min_detection_confidence=0.5) as face_mesh:
             
             # TODO: Just check the extension of self.img_path first to see if it's a PNG
-
             try:
                 results = face_mesh.process(self.img)
-            except:
-                # PNG was probaly provided, try to convert to JPG
-                try:
-                    # tmp_path = 'converted.jpg'
-                    # png_img = skimage.io.imread(self.img_path)
-                    # rgb_img = skimage.color.rgba2rgb(png_img)
-                    # skimage.io.imsave(tmp_path, rgb_img, quality=100)
-                    # self.img = skimage.io.imread(tmp_path)
-                    # os.remove(tmp_path) # Cleanup
-                    # results = face_mesh.process(self.img)
+            except Exception as e:
+                if type(e) == ValueError and 'must contain three channel rgb info' in '%s' % e:
+                    # PNG was probaly provided, try to convert to JPG
+                    try:
+                        # tmp_path = 'converted.jpg'
+                        # png_img = skimage.io.imread(self.img_path)
+                        # rgb_img = skimage.color.rgba2rgb(png_img)
+                        # skimage.io.imsave(tmp_path, rgb_img, quality=100)
+                        # self.img = skimage.io.imread(tmp_path)
+                        # os.remove(tmp_path) # Cleanup
+                        # results = face_mesh.process(self.img)
 
-                    self.img = skimage.color.rgba2rgb(self.img)
-                    results = face_mesh.process(self.img)
-                except:
-                    # raise Exception('Unable to use a PNG, and unable to automatically convert PNG to JPG')
-                    self.report({'ERROR_INVALID_INPUT'}, 'Unable to use this image, please try a JPG/JPEG image instead')
+                        self.img = skimage.color.rgba2rgb(self.img)
+                        results = face_mesh.process(self.img)
+                    except Exception as e:
+                        # raise Exception('Unable to use a PNG, and unable to automatically convert PNG to JPG')
+                        self.report({'ERROR_INVALID_INPUT'}, 'Unable to use this image, please try a JPG/JPEG image instead.')
+                        return {'CANCELLED'}
+                else:
+                    # Not a 3-channel issue
+                    self.report({'ERROR_INVALID_INPUT'}, '%s: %s' % (type(e), e))
                     return {'CANCELLED'}
 
         # Only support one face per image, ignores any other faces detected
+        if len(results.multi_face_landmarks) == 0:
+            self.report({'ERROR_INVALID_INPUT'}, 'Unable to find a face in this image. Please try a closer image.')
+            return {'CANCELLED'}
         face_landmarks = results.multi_face_landmarks[0]
         self.keypoints = np.array([(W*point.x,H*point.y) for point in face_landmarks.landmark[0:468]])#after 468 is iris or something else
 

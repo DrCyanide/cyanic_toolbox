@@ -25,7 +25,7 @@ bl_info = {
     "author" : "DrCyanide",
     "description" : "",
     "blender" : (2, 81, 0), # Minimum version
-    "version" : (0, 5, 2), # Add-on version
+    "version" : (0, 5, 3), # Add-on version
     "location" : "View3D > Sidebar > Cyanic",
     "warning" : "Requires installation of dependencies",
     "tracker_url": "https://github.com/DrCyanide/cyanic_toolbox/issues",
@@ -271,6 +271,19 @@ class CYANIC_preferences(bpy.types.AddonPreferences):
 
     header_names = ["Module", "Version", ""]
 
+    save_dir: bpy.props.EnumProperty(
+        items=[
+            ('IMG_DIR', 'With image file', 'Save in the same directory as the image.'),
+            ('BLEND_DIR', 'With .blend file', 'Save in the same directory as the .blend file. If .blend file isn\'t saved, save with image.'),
+            ('CUSTOM_DIR', 'Custom directory', 'Pick a custom directory to save in')
+        ],
+        name='Face mesh save dir',
+        description='Set the default location where meshes created should be saved.',
+        default='IMG_DIR'
+    )
+
+    custom_path: bpy.props.StringProperty(name='Custom Path', default='', subtype="FILE_PATH")
+
     def draw_dependency(self, dependency, dependency_box):
         # module name, version, install/remove button
         # Check if installed
@@ -310,18 +323,28 @@ class CYANIC_preferences(bpy.types.AddonPreferences):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator(CYANIC_OT_install_dependencies.bl_idname, icon="CONSOLE")
-        # TODO: Add a table with the list of dependencies and their version numbers for troubleshooting.
-        # dependency box
+
+        # Save dir
+        layout.label(text="Set first choices for face mesh save directory. If .blend file isn't saved, custom path will be tried.")
+        layout.prop(self, 'save_dir')
+        layout.prop(self, 'custom_path')
+        
+        # Dependency sub-box
         dependency_box = layout.box()
         dependency_box.label(text="Add-on Dependencies")
 
+        # Install All Dependencies button
+        dependency_box.operator(CYANIC_OT_install_dependencies.bl_idname, icon="CONSOLE")
+
+        # Dependency Table
         headers = dependency_box.split()
         for name in CYANIC_preferences.header_names:
             col = headers.column()
             col.label(text=name)
         for dependency in dependencies:
             self.draw_dependency(dependency, dependency_box)
+
+        
 
 # Classes used to set up the Add-on preferences / install messages
 # I'd like to move these to their own files, but the shared global variables need consideration
