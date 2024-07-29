@@ -19,5 +19,6 @@ This Blender Add-on allows for you to quickly make a 3D face mesh from a 2D imag
 * "Undo" and "Redo" commands should work as expected
 * The "Rig Face + Eyes" will align Rigify Meta-rig bones with their closest matching vertex in the face mesh. IT DOES NOT PARENT ANYTHING! That has to be done after you generate a rig from the meta-rig.
 
-There's a lot of feature ideas for stuff I *could* add, but I don't know if I'll get to them.
-Mediapipe 3D Pose Estimation from 2D image/video is high on my To Do list, but 
+## MOCAP DOES NOT WORK YET
+
+Mediapipe 3D Pose Estimation from 2D image/video is highly desirable feature, but it takes a lot of math that I need to study before I can make it a reality. The Work In Progress Mocap tab is there if you want to play with it, but don't expect much.
