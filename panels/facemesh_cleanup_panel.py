@@ -1,6 +1,6 @@
 import bpy
 
-from ..operators import FacemeshCleanupSymmetrizeOperator, FacemeshCleanupOpenMouthOperator, FacemeshCleanupOpenEyesOperator, FacemeshCleanupCloseEyesOperator, FacemeshCleanupCloseMouthOperator
+from ..operators import FacemeshCleanupSymmetrizeOperator, FacemeshCleanupSmartSymmetrizeOperator, FacemeshCleanupOpenMouthOperator, FacemeshCleanupOpenEyesOperator, FacemeshCleanupCloseEyesOperator, FacemeshCleanupCloseMouthOperator
 
 class FACEMESH_CLEANUP_PT_Panel(bpy.types.Panel):
     bl_label = "Cleanup"
@@ -24,7 +24,8 @@ class FACEMESH_CLEANUP_PT_Panel(bpy.types.Panel):
         sub = col.column()
         
         # layout.label(text="Snap to Symmetry might make mistakes. If so, manually edit verts to be closer to symmetrical then try again.")
-        col.operator(FacemeshCleanupSymmetrizeOperator.bl_idname, text='Snap to Symmetry')
+        # col.operator(FacemeshCleanupSymmetrizeOperator.bl_idname, text='Snap to Symmetry')
+        col.operator(FacemeshCleanupSmartSymmetrizeOperator.bl_idname, text='Snap to Symmetry')
         col.operator(FacemeshCleanupOpenEyesOperator.bl_idname, text='Open eyes')
         col.operator(FacemeshCleanupOpenMouthOperator.bl_idname, text='Open mouth')
         

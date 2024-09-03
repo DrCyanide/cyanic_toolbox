@@ -106,6 +106,54 @@ def rebuild_faces(facemesh, face_vert_list):
         for v in face:
             facemesh.vertices[v].select = False
 
+class FacemeshCleanupSmartSymmetrizeOperator(bpy.types.Operator):
+    """Symmetry by vertex. More precise than Blender's Symmetrize for the facemesh"""
+    bl_idname = "object.facemeshcleanup_smart_symmetrize"
+    bl_label = "FacemeshCleanupSmartSymmetrize"
+    bl_options = {'REGISTER', 'UNDO'} # Enable undo for operations
+
+    def execute(self, context):
+        if len(facemesh_config_data.keys()) == 0:
+            load_config()
+        facemesh = context.scene.cyanic_facemesh
+        starting_mode = bpy.context.object.mode
+
+        selectObject(facemesh.name, 'MESH')
+
+        # Doing it simple for now
+        #   * Assuming Mirroring over X
+
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_mode(type='VERT')
+
+        # Counter-intuitively, you select the vertexes in Object mode, then switch to Edit mode
+        bpy.ops.object.mode_set(mode='OBJECT')
+        for vert_index in facemesh_config_data['symmetry']['center']:
+            # facemesh.vertices[vert_index].select = True
+            facemesh.vertices[vert_index].co.x = 0
+      
+        for vert_pair in facemesh_config_data['symmetry']['mirror_pairs']:
+            # Find the distance between the two X axis, split that distance left and right.
+            # Average the Y and Z 
+            left_side = facemesh.vertices[vert_pair[0]]
+            right_side = facemesh.vertices[vert_pair[1]]
+
+            x_distance = abs(left_side.co.x) + abs(right_side.co.x)
+            facemesh.vertices[vert_pair[0]].co.x = -1 * x_distance/2
+            facemesh.vertices[vert_pair[1]].co.x = x_distance/2
+
+            z_average = (left_side.co.z + right_side.co.z) / 2
+            facemesh.vertices[vert_pair[0]].co.z = z_average
+            facemesh.vertices[vert_pair[1]].co.z = z_average
+
+            y_average = (left_side.co.y + right_side.co.y) / 2
+            facemesh.vertices[vert_pair[0]].co.y = y_average
+            facemesh.vertices[vert_pair[1]].co.y = y_average
+
+
+        bpy.ops.object.mode_set(mode=starting_mode)
+        return {'FINISHED'}
+
 
 class FacemeshCleanupSymmetrizeOperator(bpy.types.Operator):
     """Use Snap to Symmetry on the model. If it doesn't work right the first time, manually edit the verts to be more symmetrical and try again"""
