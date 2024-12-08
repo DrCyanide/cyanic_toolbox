@@ -1,14 +1,15 @@
 # Cyanic Toolbox
 This Blender Add-on allows for you to quickly make a 3D face mesh from a 2D image, touch up that face mesh, and align Rigify bones to it.
 
+![Side by Side](readme_imgs/example_side_by_side.gif)
+
 ## Install
-* Download the project as a zip file, and put it in the directory of your choosing
-* DO NOT UNZIP IT! Blender add-ons like to be zipped up
-* Open Blender with "Run as administrator" to be able to install the dependencies. (You can open it normally if you're using the portable version of Blender)
-* Edit > Preferences > Add-ons > Install, then navigate to the saved zip folder
-* Search for "Cyanic Toolbox" and check the box next to it, then click the triangle to expand the add-on preferences
-* Click either the "Install all dependencies" button, or go one by one down the dependencies to install them
-* Once all the dependencies are installed, `Cyanic` should show up in your Layout's sidebar menu
+* Download the [latest release](https://github.com/DrCyanide/cyanic_toolbox/releases)
+* In Blender 4.2 or newer go to `Edit` > `Preferences` > `Add-ons`, then in the upper right click the down arrow and choose `Install from Disk`. Then navigate to the saved zip folder and click the `Install from Disk` button
+* Search for "Cyanic Toolbox" and make sure there's check the box next to it
+* In the 3D workspace, `Cyanic` should show up in your Layout's sidebar menu
+
+![Beta screenshot](readme_imgs/no_mocap_panel.jpg)
 
 ## Use
 * In the "Facemesh Builder" section, select the filepath for an image with a face - ideally a JPG but sometimes PNGs have the correct formatting to work
@@ -21,4 +22,18 @@ This Blender Add-on allows for you to quickly make a 3D face mesh from a 2D imag
 
 ## MOCAP DOES NOT WORK YET
 
-Mediapipe 3D Pose Estimation from 2D image/video is highly desirable feature, but it takes a lot of math that I need to study before I can make it a reality. The Work In Progress Mocap tab is there if you want to play with it, but don't expect much.
+Mediapipe 3D Pose Estimation from 2D image/video is highly desirable feature, but it takes a lot of math that I need to study before I can make it a reality.
+
+## Troubleshooting
+
+If you get an error that says `DLL load failed while importing _framework_bindings: A dynamic link library (DLL) initialization routine failed.` - This likely means you have [BlendARMocap](https://github.com/cgtinker/BlendArMocap) installed. Please uninstall (not just disable) it and any other add-on that uses Mediapipe. 
+
+If you're still having issues, please take a screenshot of the details in the Add-ons 
+
+## (Optional) Build this project yourself
+
+If you're interested in programming more features (or impatient for the next release, or wanting to release on a different platform), you'll need to be able to build this project yourself to test it. Here's the basic steps.
+
+1) Run `python wheel_dl.py` to download the required Python Wheel files to your system. These are the dependency libraries that this add-on needs to operate. Blender will basically `pip install` these files.
+2) Update `blender_manifest.toml` to a new version number. If you edited the dependencies, update the `wheels =` list to include the new dependencies. If you're adding support for a new operating system, make sure it's included in the `platforms =` list.
+3) Add Blender to your system path and run `blender --command extension build --split-platforms`. This will create a new zip of the project which can be installed the same as a release.
