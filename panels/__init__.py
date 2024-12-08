@@ -9,5 +9,5 @@ panel_classes = (
     FACEMESH_GENERAL_PT_Panel,
     FACEMESH_CLEANUP_PT_Panel,
     FACEMESH_RIGGING_PT_Panel,
-    MOCAP_PT_Panel,
+    # MOCAP_PT_Panel,
 )

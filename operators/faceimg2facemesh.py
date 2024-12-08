@@ -50,7 +50,7 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
     data_dir = os.path.join(os.path.split(script_dir)[0], 'data')
 
     img_path = ''
-    save_dir = '' # Use same dir as the image path? Or prompt for a new path? 
+    save_dir = '' # Use same dir as the image path. Let the user manage their dependencies.
     obj_name = ''
     texture_name = ''
     uv_map = None
@@ -65,50 +65,16 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
             return {'CANCELLED'}
 
         # Determine save path
-        addon_prefs = bpy.context.preferences.addons
-        if 'cyanic_toolbox' in addon_prefs.keys():
-            cyanic_prefs = addon_prefs['cyanic_toolbox'].preferences
-            fallback_to_img_path = False
-            fallback_to_custom_path = False
-            fallback_to_last_resort = False
+        # addon_prefs = bpy.context.preferences.addons
+        # if 'cyanic_toolbox' in addon_prefs.keys():
+        #     cyanic_prefs = addon_prefs['cyanic_toolbox'].preferences
 
-            # Choose where to save the facemesh files based on user preferences
-            if cyanic_prefs.save_dir is 'BLEND_DIR':
-                # Check if the file has been saved already, and save to that directory
-                blend_path = bpy.data.filepath
-                if len(blend_path) > 0:
-                    self.save_dir = os.path.split(blend_path)[0]
-                else:
-                    # Not saved, fallback to another option
-                    fallback_to_custom_path = True
-
-            if cyanic_prefs.save_dir is 'CUSTOM_DIR' or fallback_to_custom_path:
-                # Try to save to a specified custom directory
-                if not os.path.isdir(cyanic_prefs.custom_path):
-                    # 4.1 has a bug where it can append "Documents" or the username to the end of the path when it's selected
-                    # https://projects.blender.org/blender/blender/issues/123471
-                    # Attempt to fix it
-                    fixed_path = os.path.sep.join(cyanic_prefs.custom_path.split(os.path.sep)[:-1])
-                    if os.path.isdir(fixed_path):
-                        bpy.context.preferences.addons['cyanic_toolbox'].preferences.custom_path = fixed_path
-                        cyanic_prefs = addon_prefs['cyanic_toolbox'].preferences
-                    else:
-                        fallback_to_img_path = True
-
-                if not fallback_to_img_path: # The custom path either was fine or was fixed
-                    self.save_dir = cyanic_prefs.custom_path
-
-            if cyanic_prefs.save_dir is 'IMG_DIR' or fallback_to_img_path:
-                # Worst case scenario - save to the directory the source image was in.
-                if len(self.img_path) > 0:
-                    self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
-                else:
-                    fallback_to_last_resort = True
-
-            # If pasted image, and there's no custom path, and it's not saved... 
-            if len(self.save_dir) == 0 or fallback_to_last_resort:
-                import pathlib
-                self.save_dir = os.path.join('%s' % pathlib.Path.home(), 'cyanic_face_meshes') # C:\Users\Username\cyanic_face_meshes on Windows
+        self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
+        
+        # If pasted image, and there's no custom path, and it's not saved... 
+        if len(self.save_dir):
+            import pathlib
+            self.save_dir = os.path.join('%s' % pathlib.Path.home(), 'cyanic_face_meshes') # C:\Users\Username\cyanic_face_meshes on Windows
 
         # self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
         filename =  os.path.splitext(os.path.basename(self.img_path))[0] # the name without the extension
@@ -395,6 +361,9 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
         # Rotate the vertices so the face isn't at an odd angle
         vertices = self.align_keypoints_to_grid(vertices)
 
+        print('img dir: %s' % self.img_path)
+        print('Split img dir: %s, %s' % os.path.split(self.img_path))
+        print('Save dir: %s' % self.save_dir)
         if not os.path.isdir(self.save_dir):
             os.makedirs(self.save_dir)
 

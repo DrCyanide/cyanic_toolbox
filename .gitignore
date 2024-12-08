@@ -1,3 +1,7 @@
 node_modules/*
 *.pyc
 **/__pycache__/
+wheels/
+*.whl
+*.old
+*.zip
