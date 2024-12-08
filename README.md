@@ -15,10 +15,12 @@ This Blender Add-on allows for you to quickly make a 3D face mesh from a 2D imag
 * In the "Facemesh Builder" section, select the filepath for an image with a face - ideally a JPG but sometimes PNGs have the correct formatting to work
 * Click the "Create face mesh" button
 * The generated .obj will be automatically imported into the scene. By default, this generated file (and it's texture) are saved in the same directory as your source image
+* The "Rig Face + Eyes" will align Rigify Meta-rig bones with their closest matching vertex in the face mesh. IT DOES NOT PARENT ANYTHING! That has to be done after you generate a rig from the meta-rig.
+![Rig](readme_imgs/example_rig_face.gif)
 * Cleanup tools like "Open eyes" and "Open mouth" can make it easier for adding higher quality 3D eyes/teeth
+![Open and Close](readme_imgs/example_open_and_close.gif)
 * "Snap to Symmetry" is easy access to the Blender function with the same name. Sometimes it works great, other times it needs some help
 * "Undo" and "Redo" commands should work as expected
-* The "Rig Face + Eyes" will align Rigify Meta-rig bones with their closest matching vertex in the face mesh. IT DOES NOT PARENT ANYTHING! That has to be done after you generate a rig from the meta-rig.
 
 ## MOCAP DOES NOT WORK YET
 
