@@ -5,7 +5,8 @@
 # https://docs.blender.org/manual/en/latest/advanced/extensions/getting_started.html#manifest
 
 import subprocess
-from os import listdir, makedirs
+import os
+import re
 
 target_dir = './wheels'
 
@@ -56,7 +57,7 @@ if len(download_files) == 0 or download_files[0].lower() == 'y':
     if len(delete_old) == 0 or delete_old[0].lower() == 'y':
         import shutil
         shutil.rmtree(target_dir, ignore_errors=True)
-        makedirs(target_dir)
+        os.makedirs(target_dir)
 
     for package in wheels.keys():
         print('Downloading %s' % package)
@@ -67,10 +68,23 @@ if len(download_files) == 0 or download_files[0].lower() == 'y':
     # Everything should be downloaded, now print something nice and easy to copy into blender_manifest.
     print('Download complete')
 
+# os.rename any wheel that's for a version less than cp311 (like OpenCV being cp37)
+# Really, it just replaces everything with -cp311-
+filenames = os.listdir(target_dir)
+for file in filenames:
+    new_file = re.sub('-cp3\d+-', '-cp311-', file) 
+    os.rename(os.path.join(target_dir, file), os.path.join(target_dir, new_file))
+
+
+filenames = os.listdir(target_dir)
+# Move mediapipe to last, since it needs everything else to be installed as a dependency first
+mp_name = list(filter(lambda x: 'mediapipe' in x.lower(), filenames))[0] 
+mp_index = filenames.index(mp_name)
+filenames.pop(mp_index)
+filenames.append(mp_name)
+
 print('Copy the following into blender_manifest.toml to update the wheel:\n')
 print('wheels = [')
-
-filenames = listdir('wheels')
 for file in filenames:
     print('\t"%s/%s",' % (target_dir, file))
 
