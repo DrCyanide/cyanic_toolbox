@@ -28,9 +28,13 @@ Mediapipe 3D Pose Estimation from 2D image/video is highly desirable feature, bu
 
 ## Troubleshooting
 
-If you get an error that says `DLL load failed while importing _framework_bindings: A dynamic link library (DLL) initialization routine failed.` - This likely means you have [BlendARMocap](https://github.com/cgtinker/BlendArMocap) installed. Please uninstall (not just disable) it and any other add-on that uses Mediapipe. 
+* If you get an error that says `DLL load failed while importing _framework_bindings: A dynamic link library (DLL) initialization routine failed.` - This likely means you have [BlendARMocap](https://github.com/cgtinker/BlendArMocap) installed. Please uninstall (not just disable) it and any other add-on that uses Mediapipe. 
 
-If you're still having issues, please take a screenshot of the details in the Add-ons 
+* If you updated to a newer version of Blender and Cyanic Toolbox is no longer working, try uninstalling and reinstalling the addon. If there is no uninstall button for the addon, try deleting the folder `%appdata%\Blender Foundation\Blender\<newer version>\extensions\user_default\cyanic_toolbox` and re-installing the addon. 
+
+If you're still having issues, please take a screenshot of the details in the Add-ons menu. The most common causes of problems will show up here.
+
+![Example settings](readme_imgs/example_plugin_details.png)
 
 ## (Optional) Build this project yourself
 
