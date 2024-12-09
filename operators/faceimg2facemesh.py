@@ -1,17 +1,39 @@
+# Code modified from https://github.com/DrCyanide/mediapipe-facemesh-to-obj
+# Which is forked from https://github.com/apple2373/mediapipe-facemesh
+# Which added the following license afterwards:
+#
+# -------
+# 
+# MIT License
+#
+# Copyright (c) 2023 Satoshi Tsutsui
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
+# (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify,
+# merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished
+# to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+# IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+# -------
+# This project would not have been able to come this far without Satoshi Tsutsui's work. Thank you.
+
 import bpy
 import os
 import json
 import math
+import numpy as np
+import skimage
+import mediapipe
 
 import importlib
 from collections import namedtuple
-Dependency = namedtuple("Dependency", ["module", "package", "name"])
-dependencies = (
-    Dependency(module="numpy", package=None, name='np'),
-    Dependency(module="skimage", package="scikit-image", name=None),
-    Dependency(module="mediapipe", package=None, name=None),
-)
-dependencies_imported = False
+
 
 def import_module(module_name, global_name, reload=True):
     """
@@ -32,14 +54,6 @@ def import_module(module_name, global_name, reload=True):
         # the given name, just like the regular import would.
         globals()[global_name] = importlib.import_module(module_name)
 
-def import_dependencies():
-    global dependencies_imported
-    if not dependencies_imported:
-        for dependency in dependencies:
-            import_module(dependency.module, dependency.name)
-        dependencies_imported = True
-
-
 class FaceImg2FacemeshOperator(bpy.types.Operator):
     """Convert image to face mesh"""
     bl_idname = "object.faceimg2facemesh"
@@ -56,7 +70,6 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
     uv_map = None
 
     def execute(self, context):
-        import_dependencies()
         # Read img from context.scene.cyanic_img_path
         self.img_path = context.scene.cyanic_img_path
 
@@ -72,14 +85,14 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
         self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
         
         # If pasted image, and there's no custom path, and it's not saved... 
-        if len(self.save_dir):
+        if len(self.save_dir) == 0:
             import pathlib
             self.save_dir = os.path.join('%s' % pathlib.Path.home(), 'cyanic_face_meshes') # C:\Users\Username\cyanic_face_meshes on Windows
 
         # self.save_dir = os.path.split(self.img_path)[0] # Save OBJ to the same directory as the source image
         filename =  os.path.splitext(os.path.basename(self.img_path))[0] # the name without the extension
         self.obj_name =  "%s.obj" % filename
-        self.texture_name = ".%s_texture.jpg" % filename
+        self.texture_name = "%s_texture.jpg" % filename
 
         self.prep_uv_map()
         response = self.landmark_detection()

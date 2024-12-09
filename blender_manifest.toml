@@ -2,9 +2,11 @@ schema_version = "1.0.0"
 
 blender_version_min = "4.2.0"
 id = "cyanic_toolbox"
-version = "0.8.4"
+version = "0.8.5"
+# https://spdx.org/licenses/
 license = [
     "SPDX:CC-BY-SA-2.0",
+    "MIT",
 ]
 maintainer = "DrCyanide"
 name = "Cyanic Toolbox"

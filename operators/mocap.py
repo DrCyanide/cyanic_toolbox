@@ -1,15 +1,12 @@
 import bpy
 import mathutils
 import os
+import cv2
+import mediapipe
 
 import importlib
 from collections import namedtuple
-Dependency = namedtuple("Dependency", ["module", "package", "name"])
-dependencies = (
-    Dependency(module="cv2", package="opencv-python", name=None),
-    Dependency(module="mediapipe", package=None, name=None),
-)
-dependencies_imported = False
+
 
 def import_module(module_name, global_name, reload=True):
     """
@@ -30,21 +27,12 @@ def import_module(module_name, global_name, reload=True):
         # the given name, just like the regular import would.
         globals()[global_name] = importlib.import_module(module_name)
 
-def import_dependencies():
-    global dependencies_imported
-    if not dependencies_imported:
-        for dependency in dependencies:
-            import_module(dependency.module, dependency.name)
-        dependencies_imported = True
-
-
 class GenRigFromMetaRigOperator(bpy.types.Operator):
     """Select the rig generated from the metarig"""
     bl_idname = "object.genrigfrommetarig"
     bl_label = "GenRigFromMetaRig"
 
     def execute(self, context):
-        import_dependencies()
         if context.scene.cyanic_rigify_gen_rig is None:
             self.report({'ERROR_INVALID_INPUT'}, 'No Rigify metarig selected')
             return {'CANCELLED'}

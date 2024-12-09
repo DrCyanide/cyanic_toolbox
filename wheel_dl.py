@@ -91,3 +91,4 @@ for file in filenames:
 print(']')
 
 print('# Scroll up, you need to paste that final list into blender_manifest.toml')
+print('# Run "blender --command extension build --split-platforms" afterwards to build the extension')
