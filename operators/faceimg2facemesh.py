@@ -105,6 +105,7 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
         bpy.ops.wm.obj_import(filepath=os.path.join(self.save_dir, self.obj_name))
         # The object is now the active object, assign it to cyanic_facemesh
         context.scene.cyanic_facemesh = bpy.context.view_layer.objects.active.data # Gets the active mesh (data) instead of just the object
+        bpy.ops.object.shade_smooth() # Shade smooth, because no one wants the polygon version by default
         return {'FINISHED'}
 
     # borrowed from https://github.com/YadiraF/DECA/blob/f84855abf9f6956fb79f3588258621b363fa282c/decalib/utils/util.py
