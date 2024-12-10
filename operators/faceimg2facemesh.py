@@ -320,26 +320,32 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
             try:
                 results = face_mesh.process(self.img)
             except Exception as e:
-                if type(e) == ValueError and 'must contain three channel rgb info' in '%s' % e:
-                    # PNG was probaly provided, try to convert to JPG
+                # if type(e) == ValueError and 'must contain three channel rgb info' in '%s' % e:
+                error_str = '%s' % e
+                if type(e) == ValueError and ('must contain three channel rgb' in error_str or 'must contain 3 channel rgb' in error_str):
+                    # PNG was probaly provided, try to convert to JPG-like format
+                    old_img = self.img
                     try:
-                        # tmp_path = 'converted.jpg'
-                        # png_img = skimage.io.imread(self.img_path)
-                        # rgb_img = skimage.color.rgba2rgb(png_img)
-                        # skimage.io.imsave(tmp_path, rgb_img, quality=100)
-                        # self.img = skimage.io.imread(tmp_path)
-                        # os.remove(tmp_path) # Cleanup
-                        # results = face_mesh.process(self.img)
+                        # Should solve "cannot cast array data from dtype('float64') to dtype('uint8') according to the rule 'safe'"
+                        rgb_img = skimage.color.rgba2rgb(self.img) # This removes alpha, but converts the values from 0-255 ints into floats
+                        rgb_img = rgb_img * 255 # Get the 0-255 range back, but still floats
+                        rgb_img = rgb_img.astype('uint8') # Converts it to int, the format mediapipe expects
+                        self.img = rgb_img
 
-                        self.img = skimage.color.rgba2rgb(self.img)
+                    except Exception as e:
+                        self.report({'ERROR_INVALID_INPUT'}, 'Error with SKImage: %s' % e)
+                    
+                    try:
                         results = face_mesh.process(self.img)
                     except Exception as e:
                         # raise Exception('Unable to use a PNG, and unable to automatically convert PNG to JPG')
                         self.report({'ERROR_INVALID_INPUT'}, 'Unable to use this image, please try a JPG/JPEG image instead.')
+                        # self.report({'ERROR_INVALID_INPUT'}, 'Error with face_mesh.process: %s' % e)
+                        self.img = old_img
                         return {'CANCELLED'}
                 else:
                     # Not a 3-channel issue
-                    self.report({'ERROR_INVALID_INPUT'}, '%s: %s' % (type(e), e))
+                    self.report({'ERROR_INVALID_INPUT'}, '(not a jpg) %s: %s' % (type(e), e))
                     return {'CANCELLED'}
 
         # Only support one face per image, ignores any other faces detected

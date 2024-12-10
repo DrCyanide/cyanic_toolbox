@@ -2,7 +2,7 @@ schema_version = "1.0.0"
 
 blender_version_min = "4.2.0"
 id = "cyanic_toolbox"
-version = "0.8.5"
+version = "0.8.6"
 # https://spdx.org/licenses/
 license = [
     "SPDX:CC-BY-SA-2.0",
@@ -28,8 +28,6 @@ wheels = [
         "./wheels/flatbuffers-24.3.25-py2.py3-none-any.whl",
         "./wheels/fonttools-4.55.2-cp311-cp311-win_amd64.whl",
         "./wheels/imageio-2.36.1-py3-none-any.whl",
-        "./wheels/importlib_metadata-8.5.0-py3-none-any.whl",
-        "./wheels/importlib_resources-6.4.5-py3-none-any.whl",
         "./wheels/jax-0.4.36-py3-none-any.whl",
         "./wheels/jaxlib-0.4.36-cp311-cp311-win_amd64.whl",
         "./wheels/kiwisolver-1.4.7-cp311-cp311-win_amd64.whl",
@@ -54,8 +52,6 @@ wheels = [
         "./wheels/six-1.17.0-py2.py3-none-any.whl",
         "./wheels/sounddevice-0.5.1-py3-none-win_amd64.whl",
         "./wheels/tifffile-2024.9.20-py3-none-any.whl",
-        "./wheels/typing_extensions-4.12.2-py3-none-any.whl",
-        "./wheels/zipp-3.21.0-py3-none-any.whl",
         "./wheels/mediapipe-0.10.14-cp311-cp311-win_amd64.whl",
 ]
 
