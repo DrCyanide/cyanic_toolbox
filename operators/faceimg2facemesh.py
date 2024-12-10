@@ -349,7 +349,7 @@ class FaceImg2FacemeshOperator(bpy.types.Operator):
                     return {'CANCELLED'}
 
         # Only support one face per image, ignores any other faces detected
-        if len(results.multi_face_landmarks) == 0:
+        if results == None or results.multi_face_landmarks == None or len(results.multi_face_landmarks) == 0:
             self.report({'ERROR_INVALID_INPUT'}, 'Unable to find a face in this image. Please try a closer image.')
             return {'CANCELLED'}
         face_landmarks = results.multi_face_landmarks[0]
