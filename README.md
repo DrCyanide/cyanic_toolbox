@@ -41,5 +41,5 @@ If you're still having issues, please take a screenshot of the details in the Ad
 If you're interested in programming more features (or impatient for the next release, or wanting to release on a different platform), you'll need to be able to build this project yourself to test it. Here's the basic steps.
 
 1) Run `python wheel_dl.py` to download the required Python Wheel files to your system. These are the dependency libraries that this add-on needs to operate. Blender will basically `pip install` these files.
-2) Update `blender_manifest.toml` to a new version number. If you edited the dependencies, update the `wheels =` list to include the new dependencies. If you're adding support for a new operating system, make sure it's included in the `platforms =` list.
+2) Update `blender_manifest.toml` to a new `version` number. If you edited the dependencies (or if the previous step downloaded different dependencies), update the `wheels =` list to include the new dependencies. If you're adding support for a new operating system, make sure it's included in the `platforms =` list.
 3) Add Blender to your system path and run `blender --command extension build --split-platforms`. This will create a new zip of the project which can be installed the same as a release.
