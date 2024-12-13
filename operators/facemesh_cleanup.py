@@ -24,8 +24,11 @@ def findObjectByNameAndType(name, obj_type):
     return objects[-1]
 
 def selectObject(name, obj_type):
-    bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.ops.object.select_all(action='DESELECT')
+    try:
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.select_all(action='DESELECT')
+    except:
+        pass # No object selected, likely already in object mode
     obj = findObjectByNameAndType(name, obj_type)
     bpy.context.view_layer.objects.active = obj # Active object is what transform_apply is interacting with
     bpy.data.objects[obj.name].select_set(True)

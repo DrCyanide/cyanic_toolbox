@@ -69,7 +69,11 @@ class RigFacemeshOperator(bpy.types.Operator):
             context.scene.cyanic_rigify_rig = scene_armatures[-1]
             armature = context.scene.cyanic_rigify_rig
 
-        starting_mode = bpy.context.object.mode
+        starting_mode = 'OBJECT'
+        try:
+            starting_mode = bpy.context.object.mode
+        except:
+            pass # No object selected, likely in object mode already
 
         armature_obj = selectObject(armature.name, 'ARMATURE')
         armature_world_matrix_inverted = armature_obj.matrix_world.inverted()
@@ -132,7 +136,10 @@ class RigFacemeshOperator(bpy.types.Operator):
                 # Find world location of the point between
                 # bone length should be equal to width of eye
 
-        bpy.ops.object.mode_set(mode=starting_mode)
+        try:
+            bpy.ops.object.mode_set(mode=starting_mode)
+        except:
+            pass
         return {'FINISHED'}
 
 
