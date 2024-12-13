@@ -119,7 +119,12 @@ class FacemeshCleanupSmartSymmetrizeOperator(bpy.types.Operator):
         if len(facemesh_config_data.keys()) == 0:
             load_config()
         facemesh = context.scene.cyanic_facemesh
-        starting_mode = bpy.context.object.mode
+
+        starting_mode = 'OBJECT'
+        try:
+            starting_mode = bpy.context.object.mode
+        except:
+            pass # Nothing selected
 
         selectObject(facemesh.name, 'MESH')
 
@@ -167,7 +172,11 @@ class FacemeshCleanupSymmetrizeOperator(bpy.types.Operator):
 
     def execute(self, context):
         facemesh = context.scene.cyanic_facemesh
-        starting_mode = bpy.context.object.mode
+        starting_mode = 'OBJECT'
+        try:
+            starting_mode = bpy.context.object.mode
+        except:
+            pass # No object selected
 
         selectObject(facemesh.name, 'MESH')
 
@@ -194,7 +203,11 @@ class FacemeshCleanupOpenEyesOperator(bpy.types.Operator):
             load_config()
 
         facemesh = context.scene.cyanic_facemesh
-        starting_mode = bpy.context.object.mode
+        starting_mode = 'OBJECT'
+        try:
+            starting_mode = bpy.context.object.mode
+        except:
+            pass # No object selected
 
         delete_faces(facemesh, facemesh_config_data['face_verts']['eye.L'])
         delete_faces(facemesh, facemesh_config_data['face_verts']['eye.R'])
@@ -217,7 +230,11 @@ class FacemeshCleanupCloseEyesOperator(bpy.types.Operator):
             load_config()
 
         facemesh = context.scene.cyanic_facemesh
-        starting_mode = bpy.context.object.mode
+        starting_mode = 'OBJECT'
+        try:
+            starting_mode = bpy.context.object.mode
+        except:
+            pass
 
         rebuild_faces(facemesh, facemesh_config_data['face_verts']['eye.L'])
         rebuild_faces(facemesh, facemesh_config_data['face_verts']['eye.R'])
@@ -238,7 +255,11 @@ class FacemeshCleanupOpenMouthOperator(bpy.types.Operator):
             load_config()
 
         facemesh = context.scene.cyanic_facemesh
-        starting_mode = bpy.context.object.mode
+        starting_mode = 'OBJECT'
+        try:
+            starting_mode = bpy.context.object.mode
+        except:
+            pass # No object selected
 
         delete_faces(facemesh, facemesh_config_data['face_verts']['mouth'])
 
@@ -260,7 +281,11 @@ class FacemeshCleanupCloseMouthOperator(bpy.types.Operator):
             load_config()
 
         facemesh = context.scene.cyanic_facemesh
-        starting_mode = bpy.context.object.mode
+        starting_mode = 'OBJECT'
+        try:
+            starting_mode = bpy.context.object.mode
+        except:
+            pass # No object selected
 
         rebuild_faces(facemesh, facemesh_config_data['face_verts']['mouth'])
 
