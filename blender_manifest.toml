@@ -2,7 +2,7 @@ schema_version = "1.0.0"
 
 blender_version_min = "4.2.0"
 id = "cyanic_toolbox"
-version = "0.8.6"
+version = "0.8.7"
 # https://spdx.org/licenses/
 license = [
     "SPDX:CC-BY-SA-2.0",

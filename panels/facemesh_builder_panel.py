@@ -25,4 +25,5 @@ class FACEMESH_BUILDER_PT_Panel(bpy.types.Panel):
         sub.prop(view, 'cyanic_img_path')
         # col.operator(FileBrowserOperator.bl_idname, text='Select face image')
         # Preview face image?
-        col.operator(FaceImg2FacemeshOperator.bl_idname, text='Create face mesh')
+        col.enabled = context.scene.cyanic_img_path != None
+        col.operator(FaceImg2FacemeshOperator.bl_idname, text='Create Facemesh')

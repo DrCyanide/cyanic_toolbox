@@ -96,8 +96,8 @@ def register_props():
     )
 
     bpy.types.Scene.cyanic_facemesh = bpy.props.PointerProperty(
-        name="FaceMesh",
-        description="FaceMesh generated from Mediapipe",
+        name="Facemesh",
+        description="Facemesh generated from Mediapipe",
         type=bpy.types.Mesh,
         poll=facemesh_vertex_count_match
     )
@@ -116,14 +116,14 @@ def register_props():
 
     bpy.types.Scene.cyanic_rigify_rig = bpy.props.PointerProperty(
         name="Metarig",
-        description="Rigify rig",
+        description="Rigify metarig",
         type=bpy.types.Armature,
         poll=valid_metarig
     )
 
     bpy.types.Scene.cyanic_rigify_gen_rig = bpy.props.PointerProperty(
         name="Rig",
-        description="Rigify generated rig",
+        description="Rigify generated rig (metarig => generate rig)",
         type=bpy.types.Armature,
         # poll=???,
     )

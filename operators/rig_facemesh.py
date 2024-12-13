@@ -19,13 +19,16 @@ def findObjectByNameAndType(name, obj_type):
     objects = [obj for obj in bpy.context.scene.objects if obj.type == obj_type and obj.data.name == name]
     if len(objects) == 1:
         return objects[0]
-    print('Found %s objects for %s, %s' % (len(objects), name, obj_type))
-    print(objects)
+    # print('Found %s objects for %s, %s' % (len(objects), name, obj_type))
+    # print(objects)
     return objects[-1]
 
 def selectObject(name, obj_type):
-    bpy.ops.object.mode_set(mode='OBJECT')
-    bpy.ops.object.select_all(action='DESELECT')
+    try:
+        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.object.select_all(action='DESELECT')
+    except:
+        pass # If there's no object selected, it can't do either option
     obj = findObjectByNameAndType(name, obj_type)
     bpy.context.view_layer.objects.active = obj # Active object is what transform_apply is interacting with
     bpy.data.objects[obj.name].select_set(True)
@@ -132,6 +135,45 @@ class RigFacemeshOperator(bpy.types.Operator):
         bpy.ops.object.mode_set(mode=starting_mode)
         return {'FINISHED'}
 
+
+class GenRigFromMetaRigOperator(bpy.types.Operator):
+    """Convert metarig to rig"""
+    bl_idname = "object.genrigfrommetarig"
+    bl_label = "GenRigFromMetaRig"
+
+    def execute(self, context):
+        if context.scene.cyanic_rigify_rig is None:
+            self.report({'ERROR_INVALID_INPUT'}, 'No Rigify metarig selected')
+            return {'CANCELLED'}
+
+        # Get a set of all objects
+        initial_objects = set(bpy.context.scene.objects)
+
+        # Select the metarig so that rigify can modify it
+        # selectObject(context.scene.cyanic_rigify_rig.name, bpy.types.Armature) # Not technically an "object"
+        try:
+            bpy.ops.object.mode_set(mode='OBJECT')
+            bpy.ops.object.select_all(action='DESELECT')
+        except:
+            pass # If there's no object selected, it can't do either option
+        for obj in bpy.context.scene.objects:
+            if obj.data == context.scene.cyanic_rigify_rig:
+                bpy.context.view_layer.objects.active = obj
+                bpy.data.objects[obj.name].select_set(True)
+                break
+        
+        # Convert the metarig
+        bpy.ops.pose.rigify_generate()
+
+        # Get an updated set of all objects (new one is the rig)
+        final_objects = set(bpy.context.scene.objects)
+
+        # Update context.scene.cyanic_rigify_gen_rig
+        new_object = final_objects - initial_objects
+        if len(new_object) > 0:
+            context.scene.cyanic_rigify_gen_rig = new_object.pop().data
+
+        return {'FINISHED'}
 
 
 # IIRC Eyes are particularly annoying to parent

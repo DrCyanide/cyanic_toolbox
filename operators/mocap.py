@@ -8,44 +8,6 @@ import importlib
 from collections import namedtuple
 
 
-def import_module(module_name, global_name, reload=True):
-    """
-    Import a module.
-    :param module_name: Module to import.
-    :param global_name: (Optional) Name under which the module is imported. If None the module_name will be used.
-        This allows to import under a different name with the same effect as e.g. "import numpy as np" where "np" is
-        the global_name under which the module can be accessed.
-    :raises: ImportError and ModuleNotFoundError
-    """
-    if global_name is None:
-        global_name = module_name
-    
-    if global_name in globals():
-        importlib.reload(globals()[global_name])
-    else:
-        # Attempt to import the module and assign it to globals dictionary. This allow to access the module under
-        # the given name, just like the regular import would.
-        globals()[global_name] = importlib.import_module(module_name)
-
-class GenRigFromMetaRigOperator(bpy.types.Operator):
-    """Select the rig generated from the metarig"""
-    bl_idname = "object.genrigfrommetarig"
-    bl_label = "GenRigFromMetaRig"
-
-    def execute(self, context):
-        if context.scene.cyanic_rigify_gen_rig is None:
-            self.report({'ERROR_INVALID_INPUT'}, 'No Rigify metarig selected')
-            return {'CANCELLED'}
-
-        # Ideally, I'd LOVE to automatically press the "Generate Rig" button for the user.
-        if context.scene.cyanic_rigify_gen_rig.rigify_target_rig is None:
-            self.report({'ERROR_INVALID_INPUT'}, "Rigify metarig hasn't generated a rig")
-            return {'CANCELLED'}
-
-        context.scene.cyanic_rigify_gen_rig = context.scene.cyanic_rigify_gen_rig.rigify_target_rig
-        return {'FINISHED'}
-
-
 class MocapOperator(bpy.types.Operator):
     """Generate mocap"""
     bl_idname = "object.mocap"

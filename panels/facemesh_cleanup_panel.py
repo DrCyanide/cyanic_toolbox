@@ -3,7 +3,7 @@ import bpy
 from ..operators import FacemeshCleanupSymmetrizeOperator, FacemeshCleanupSmartSymmetrizeOperator, FacemeshCleanupOpenMouthOperator, FacemeshCleanupOpenEyesOperator, FacemeshCleanupCloseEyesOperator, FacemeshCleanupCloseMouthOperator
 
 class FACEMESH_CLEANUP_PT_Panel(bpy.types.Panel):
-    bl_label = "Cleanup"
+    bl_label = "Cleanup Facemesh"
     bl_idname = "FACEMESH_CLEANUP_PT_Panel"
     bl_parent_id = "FACEMESH_GENERAL_PT_Panel"
     bl_space_type = 'VIEW_3D'
@@ -23,8 +23,8 @@ class FACEMESH_CLEANUP_PT_Panel(bpy.types.Panel):
         col = layout.column(align=True)
         sub = col.column()
         
-        # layout.label(text="Snap to Symmetry might make mistakes. If so, manually edit verts to be closer to symmetrical then try again.")
-        # col.operator(FacemeshCleanupSymmetrizeOperator.bl_idname, text='Snap to Symmetry')
+        col.enabled = context.scene.cyanic_facemesh != None
+
         col.operator(FacemeshCleanupSmartSymmetrizeOperator.bl_idname, text='Snap to Symmetry')
         col.operator(FacemeshCleanupOpenEyesOperator.bl_idname, text='Open eyes')
         col.operator(FacemeshCleanupOpenMouthOperator.bl_idname, text='Open mouth')
