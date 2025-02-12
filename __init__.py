@@ -114,7 +114,7 @@ def register_props():
         type=bpy.types.Mesh,
     )
 
-    bpy.types.Scene.cyanic_rigify_rig = bpy.props.PointerProperty(
+    bpy.types.Scene.cyanic_rigify_metarig = bpy.props.PointerProperty(
         name="Metarig",
         description="Rigify metarig",
         type=bpy.types.Armature,
@@ -159,7 +159,7 @@ def unregister_props():
         del bpy.types.Scene.cyanic_facemesh
         del bpy.types.Scene.cyanic_eye_left
         del bpy.types.Scene.cyanic_eye_right
-        del bpy.types.Scene.cyanic_rigify_rig
+        del bpy.types.Scene.cyanic_rigify_metarig
         del bpy.types.Scene.cyanic_rigify_gen_rig
 
         del bpy.types.Scene.cyanic_source_type

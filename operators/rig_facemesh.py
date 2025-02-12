@@ -44,8 +44,8 @@ class AddRigOperator(bpy.types.Operator):
         # Add Rig
         bpy.ops.object.armature_human_metarig_add()
         scene_armatures = bpy.data.armatures
-        context.scene.cyanic_rigify_rig = scene_armatures[-1]
-        # armature = context.scene.cyanic_rigify_rig
+        context.scene.cyanic_rigify_metarig = scene_armatures[-1]
+        # armature = context.scene.cyanic_rigify_metarig
         return {'FINISHED'}
 
 
@@ -60,14 +60,14 @@ class RigFacemeshOperator(bpy.types.Operator):
             load_config()
         
         facemesh = context.scene.cyanic_facemesh
-        armature = context.scene.cyanic_rigify_rig
+        armature = context.scene.cyanic_rigify_metarig
         
         if armature is None:
             # Add Rig
             bpy.ops.object.armature_human_metarig_add()
             scene_armatures = bpy.data.armatures
-            context.scene.cyanic_rigify_rig = scene_armatures[-1]
-            armature = context.scene.cyanic_rigify_rig
+            context.scene.cyanic_rigify_metarig = scene_armatures[-1]
+            armature = context.scene.cyanic_rigify_metarig
 
         starting_mode = 'OBJECT'
         try:
@@ -149,7 +149,7 @@ class GenRigFromMetaRigOperator(bpy.types.Operator):
     bl_label = "GenRigFromMetaRig"
 
     def execute(self, context):
-        if context.scene.cyanic_rigify_rig is None:
+        if context.scene.cyanic_rigify_metarig is None:
             self.report({'ERROR_INVALID_INPUT'}, 'No Rigify metarig selected')
             return {'CANCELLED'}
 
@@ -157,14 +157,14 @@ class GenRigFromMetaRigOperator(bpy.types.Operator):
         initial_objects = set(bpy.context.scene.objects)
 
         # Select the metarig so that rigify can modify it
-        # selectObject(context.scene.cyanic_rigify_rig.name, bpy.types.Armature) # Not technically an "object"
+        # selectObject(context.scene.cyanic_rigify_metarig.name, bpy.types.Armature) # Not technically an "object"
         try:
             bpy.ops.object.mode_set(mode='OBJECT')
             bpy.ops.object.select_all(action='DESELECT')
         except:
             pass # If there's no object selected, it can't do either option
         for obj in bpy.context.scene.objects:
-            if obj.data == context.scene.cyanic_rigify_rig:
+            if obj.data == context.scene.cyanic_rigify_metarig:
                 bpy.context.view_layer.objects.active = obj
                 bpy.data.objects[obj.name].select_set(True)
                 break

@@ -113,7 +113,7 @@
         ]
     },
     "midpoint_verts": {
-        "desc": "Verts used to find the midpoint of the opening",
+        "desc": "Verts used to find the midpoint of the opening.",
         "eye.R": {
             "horizontal": [33, 133],
             "vertical": [159, 145]
@@ -134,27 +134,27 @@
             "head": null
         },
         "jaw.L": {
-            "tail": 435,
-            "head": 447
+            "tail": 397,
+            "head": 454
         },
         "jaw.L.001": {
             "tail": 395,
-            "head": 435
+            "head": 397
         },
         "jaw.R": {
-            "tail": 215,
-            "head": 227
+            "tail": 172,
+            "head": 234
         },
         "jaw.R.001": {
             "tail": 170,
-            "head": 215
+            "head": 172
         },
         "temple.L": {
-            "tail": 447,
+            "tail": 454,
             "head": 389
         },
         "temple.R": {
-            "tail": 227,
+            "tail": 234,
             "head": 162
         },
         "chin": {
@@ -242,39 +242,39 @@
             "head": 264
         },
         "brow.T.L.001": {
-            "tail": 334,
+            "tail": 333,
             "head": 301
         },
         "brow.T.L.002": {
-            "tail": 336,
-            "head": 334
+            "tail": 337,
+            "head": 333
         },
         "brow.T.L.003": {
             "tail": 168,
-            "head": 336
+            "head": 337
         },
         "brow.T.R": {
             "tail": 71,
             "head": 34
         },
         "brow.T.R.001": {
-            "tail": 105,
+            "tail": 104,
             "head": 71
         },
         "brow.T.R.002": {
-            "tail": 107,
-            "head": 105
+            "tail": 108,
+            "head": 104
         },
         "brow.T.R.003": {
             "tail": 168,
-            "head": 107
+            "head": 108
         },
         "forehead.L": {
-            "tail": 336,
+            "tail": 337,
             "head": 338
         },
         "forehead.L.001": {
-            "tail": 334,
+            "tail": 333,
             "head": 332
         },
         "forehead.L.002": {
@@ -282,11 +282,11 @@
             "head": 284
         },
         "forehead.R": {
-            "tail": 107,
+            "tail": 108,
             "head": 109
         },
         "forehead.R.001": {
-            "tail": 105,
+            "tail": 104,
             "head": 103
         },
         "forehead.R.002": {
@@ -394,40 +394,40 @@
             "head": 157
         },
         "brow.B.L": {
-            "tail": 445,
-            "head": 353
+            "tail": 283,
+            "head": 276
         },
         "brow.B.L.001": {
-            "tail": 443,
-            "head": 445
+            "tail": 282,
+            "head": 283
         },
         "brow.B.L.002": {
-            "tail": 442,
-            "head": 443
+            "tail": 295,
+            "head": 282
         },
         "brow.B.L.003": {
-            "tail": 441,
-            "head": 442
+            "tail": 285,
+            "head": 295
         },
         "brow.B.R": {
-            "tail": 225,
-            "head": 124
+            "tail": 53,
+            "head": 46
         },
         "brow.B.R.001": {
-            "tail": 223,
-            "head": 225
+            "tail": 52,
+            "head": 53
         },
         "brow.B.R.002": {
-            "tail": 222,
-            "head": 223
+            "tail": 65,
+            "head": 52
         },
         "brow.B.R.003": {
-            "tail": 221,
-            "head": 222
+            "tail": 55,
+            "head": 65
         }
     },
     "symmetry": {
-        "desc": "Used to symmetrize the facemesh, which will allow mirror operations in Blender to work",
+        "desc": "Used to symmetrize the facemesh, which will allow mirror operations in Blender to work. This is more accurate than Blender's built in operation",
         "center": [10, 151, 9, 8, 168, 6, 197, 195, 5, 4, 1, 19, 94, 2, 164, 0, 11, 12, 13, 14, 15, 16, 17, 18, 200, 199, 175, 152],
         "mirror_pairs": [
             [109, 338],
