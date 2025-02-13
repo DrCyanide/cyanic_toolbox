@@ -103,14 +103,32 @@ def register_props():
     )
 
     bpy.types.Scene.cyanic_eye_left = bpy.props.PointerProperty(
-        name="Left Eye",
+        name="Eye - Left",
         description="The character's left eye",
         type=bpy.types.Mesh,
     )
 
     bpy.types.Scene.cyanic_eye_right = bpy.props.PointerProperty(
-        name="Right Eye",
+        name="Eye - Right",
         description="The character's right eye",
+        type=bpy.types.Mesh,
+    )
+
+    bpy.types.Scene.cyanic_mouth_top = bpy.props.PointerProperty(
+        name="Mouth - Top",
+        description="The teeth and top of mouth",
+        type=bpy.types.Mesh,
+    )
+
+    bpy.types.Scene.cyanic_mouth_bottom = bpy.props.PointerProperty(
+        name="Mouth - Bottom",
+        description="The teeth and bottom of mouth",
+        type=bpy.types.Mesh,
+    )
+
+    bpy.types.Scene.cyanic_mouth_tongue = bpy.props.PointerProperty(
+        name="Mouth - Tongue",
+        description="The tongue of the character",
         type=bpy.types.Mesh,
     )
 

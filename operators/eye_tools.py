@@ -11,7 +11,7 @@ def init_config():
     if len(facemesh_config_data.keys()) == 0:
         facemesh_config_data = cu.get_facemesh_config_data()
 
-class MoveEyesToSockets(bpy.types.Operator):
+class MoveEyesToSocketsOperator(bpy.types.Operator):
     """Move the eyes to the center of the sockets"""
     bl_idname = "object.cyanic_eyeposition"
     bl_label = "Cyanic_EYE_POSITION"
@@ -72,7 +72,7 @@ class MoveEyesToSockets(bpy.types.Operator):
         return world_co_target
 
 
-class ParentEyesToRig(bpy.types.Operator):
+class ParentEyesToRigOperator(bpy.types.Operator):
     """Parent the eyes to the bones of the rig"""
     bl_idname = "object.cyanic_eyeparent"
     bl_label = "Cyanic_EYE_PARENT"

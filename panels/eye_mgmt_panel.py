@@ -1,6 +1,6 @@
 import bpy
 
-from ..operators import MoveEyesToSockets, ParentEyesToRig
+from ..operators import MoveEyesToSocketsOperator, ParentEyesToRigOperator
 
 class EYE_MGMT_PT_Panel(bpy.types.Panel):
     bl_label = "Eye Management"
@@ -27,10 +27,10 @@ class EYE_MGMT_PT_Panel(bpy.types.Panel):
         sub.prop(view, 'cyanic_eye_right')
 
         move_eyes_col = sub.column()
-        move_eyes_col.operator(MoveEyesToSockets.bl_idname, text='Eyes to Sockets')
+        move_eyes_col.operator(MoveEyesToSocketsOperator.bl_idname, text='Eyes to Sockets')
 
         parent_rig_col = sub.column()
-        parent_rig_col.operator(ParentEyesToRig.bl_idname, text='Parent Eyes to Rig')
+        parent_rig_col.operator(ParentEyesToRigOperator.bl_idname, text='Parent Eyes to Rig')
         parent_rig_col.enabled = context.scene.cyanic_rigify_gen_rig != None and (context.scene.cyanic_eye_left != None or context.scene.cyanic_eye_right != None)
 
 

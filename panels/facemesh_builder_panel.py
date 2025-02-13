@@ -5,6 +5,7 @@ from ..operators import FileBrowserOperator, FaceImg2FacemeshOperator
 class FACEMESH_BUILDER_PT_Panel(bpy.types.Panel):
     bl_label = "Facemesh Builder"
     bl_idname = "FACEMESH_BUILDER_PT_Panel"
+    bl_parent_id = "FACEMESH_GENERAL_PT_Panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     # bl_context = 'object'
