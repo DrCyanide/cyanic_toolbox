@@ -102,6 +102,20 @@ def register_props():
         poll=facemesh_vertex_count_match
     )
 
+    bpy.types.Scene.cyanic_hand_left = bpy.props.PointerProperty(
+    # bpy.types.Object.cyanic_hand_left = bpy.props.PointerProperty(
+        name="Hand - Left",
+        description="Prefab left hand",
+        type=bpy.types.Mesh,
+    )
+    
+    bpy.types.Scene.cyanic_hand_right = bpy.props.PointerProperty(
+    # bpy.types.Object.cyanic_hand_right = bpy.props.PointerProperty(
+        name="Hand - Right",
+        description="Prefab right hand",
+        type=bpy.types.Mesh,
+    )
+
     bpy.types.Scene.cyanic_eye_left = bpy.props.PointerProperty(
         name="Eye - Left",
         description="The character's left eye",
@@ -175,6 +189,10 @@ def unregister_props():
     try:
         del bpy.types.Scene.cyanic_img_path
         del bpy.types.Scene.cyanic_facemesh
+        # del bpy.types.Scene.cyanic_hand_left
+        del bpy.types.Object.cyanic_hand_left
+        # del bpy.types.Scene.cyanic_hand_right
+        del bpy.types.Object.cyanic_hand_right
         del bpy.types.Scene.cyanic_eye_left
         del bpy.types.Scene.cyanic_eye_right
         del bpy.types.Scene.cyanic_rigify_metarig

@@ -1,6 +1,6 @@
 import bpy
 
-from ..operators import RigFacemeshOperator, AddRigOperator, MoveEyesToSocketsOperator
+from ..operators import RigFacemeshOperator, AddRigOperator, MoveEyesToSocketsOperator, RigHandsOperator
 
 class METARIGGING_PT_Panel(bpy.types.Panel):
     bl_label = "Meta-rigging"
@@ -24,6 +24,8 @@ class METARIGGING_PT_Panel(bpy.types.Panel):
         sub = col.column()
         
         sub.prop(view, 'cyanic_rigify_metarig')
+        sub.prop(context.scene, 'cyanic_hand_left')
+        sub.prop(context.scene, 'cyanic_hand_right')
 
         metarig_col = sub.column()
         metarig_col.operator(AddRigOperator.bl_idname, text='Create Metarig')
@@ -33,6 +35,11 @@ class METARIGGING_PT_Panel(bpy.types.Panel):
         move_eyes_col.operator(MoveEyesToSocketsOperator.bl_idname, text='Eyes to Sockets')
         move_eyes_col.enabled = context.scene.cyanic_eye_left != None or context.scene.cyanic_eye_right != None
 
-        rig_col = sub.column()
-        rig_col.operator(RigFacemeshOperator.bl_idname, text='Align Metarig')
-        rig_col.enabled = context.scene.cyanic_rigify_metarig != None and  context.scene.cyanic_facemesh != None
+        rig_face_col = sub.column()
+        rig_face_col.operator(RigFacemeshOperator.bl_idname, text='Align Face')
+        rig_face_col.enabled = context.scene.cyanic_rigify_metarig != None and context.scene.cyanic_facemesh != None
+
+        rig_hands_col = sub.column()
+        rig_hands_col.operator(RigHandsOperator.bl_idname, text='Align Hands')
+        # rig_hands_col.enabled = context.scene.cyanic_rigify_metarig != None and (context.scene.cyanic_hand_right != None or context.scene.cyanic_hand_left != None) 
+        # rig_hands_col.enabled = context.scene.cyanic_rigify_metarig != None and (context.object.cyanic_hand_right != None or context.object.cyanic_hand_left != None) 

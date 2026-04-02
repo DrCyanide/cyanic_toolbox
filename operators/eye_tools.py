@@ -35,7 +35,7 @@ class MoveEyesToSocketsOperator(bpy.types.Operator):
             world_co_target = self.calculate_position(context, eye_socket_data)
             # Set the world coords of cyanic_eye_left
             bpy.ops.object.mode_set(mode='OBJECT')
-            eye_obj = cu.selectObject(context.scene.cyanic_eye_left.name, 'MESH')
+            eye_obj = cu.selectObjectByName(context.scene.cyanic_eye_left.name, 'MESH')
             eye_obj.location = world_co_target
 
         if context.scene.cyanic_eye_right is not None:
@@ -43,7 +43,7 @@ class MoveEyesToSocketsOperator(bpy.types.Operator):
             world_co_target = self.calculate_position(context, eye_socket_data)
             # Set the world coords of cyanic_eye_left
             bpy.ops.object.mode_set(mode='OBJECT')
-            eye_obj = cu.selectObject(context.scene.cyanic_eye_right.name, 'MESH')
+            eye_obj = cu.selectObjectByName(context.scene.cyanic_eye_right.name, 'MESH')
             eye_obj.location = world_co_target
 
         bpy.ops.object.mode_set(mode=starting_mode)
@@ -104,7 +104,7 @@ class ParentEyesToRigOperator(bpy.types.Operator):
         return {'FINISHED'}
 
     def clear_selected_bones(self):
-        armature_obj = cu.selectObject(bpy.context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+        armature_obj = cu.selectObjectByName(bpy.context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
         for bone in bpy.data.objects[armature_obj.name].data.bones:
             bpy.data.objects[armature_obj.name].pose.bones[bone.name].bone.select = False
             bpy.data.objects[armature_obj.name].data.bones[bone.name].select = False
@@ -127,9 +127,9 @@ class ParentEyesToRigOperator(bpy.types.Operator):
     def parent_eye(self, context, eye, side_initial='L'):
         if eye is not None:
             # Select eye
-            eye_obj = cu.selectObject(eye.name, 'MESH')
+            eye_obj = cu.selectObjectByName(eye.name, 'MESH')
             # Select armature
-            armature_obj = cu.selectObject(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+            armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
             # Set mode to POSE
             bpy.ops.object.mode_set(mode='POSE')
             starting_MCH_status = bpy.context.object.data.collections_all['MCH'].is_visible

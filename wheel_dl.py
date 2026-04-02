@@ -20,7 +20,7 @@ wheels = {
     # https://pypi.org/project/opencv-python/#files
     'opencv-python': [
         'win_amd64',
-        # 'manylinux_2_17_x86_64',
+        'manylinux_2_17_x86_64',
         # 'manylinux_2_17_aarch64',
         # 'macosx_12_0_x86_64',
         # 'macosx_11_0_arm64',
@@ -28,7 +28,7 @@ wheels = {
     # https://pypi.org/project/mediapipe/#files
     'mediapipe==0.10.14': [
         'win_amd64',
-        # 'manylinux_2_17_x86_64',
+        'manylinux_2_17_x86_64',
         # 'manylinux_2_17_aarch64',
         # 'macosx_11_0_x86_64',
         # 'macosx_11_0_universal2', # Doesn't seem to be able to get dependencies
@@ -36,7 +36,7 @@ wheels = {
     # https://pypi.org/project/scikit-image/#files
     'scikit-image': [
         'win_amd64',
-        # 'manylinux_2_17_x86_64',
+        'manylinux_2_17_x86_64',
         # 'manylinux_2_17_aarch64',
         # 'macosx_12_0_arm64',
         # 'macosx_10_9_x86_64',
@@ -44,7 +44,7 @@ wheels = {
     # https://pypi.org/project/numpy/1.26.4/#files
     'numpy==1.26.4': [ # When developing, numpy 2.0 had just released, and wasn't compatible with mediapipe yet.
         'win_amd64',
-        # 'manylinux_2_17_x86_64',
+        'manylinux_2_17_x86_64',
         # 'manylinux_2_17_aarch64',
         # 'macosx_11_0_arm64',
         # 'macosx_10_9_x86_64',

@@ -2,7 +2,7 @@ import bpy
 
 class FileBrowserOperator(bpy.types.Operator):
     """Select image to convert into a face mesh"""
-    bl_idname = "open.filebrowser"
+    bl_idname = "open.facemesh_image_filebrowser"
     bl_label = "FileBrowser"
 
     # filepath = bpy.props.StringProperty(subtype="FILE_PATH") 

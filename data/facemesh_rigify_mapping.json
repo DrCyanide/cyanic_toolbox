@@ -3,7 +3,7 @@
     "desc": "Used to construct, edit, and rig a facemesh.",
     "useful_code": {
         "desc": "VERY useful for verifying what vert is which. Only updates when you toggle inbetween object mode and edit mode",
-        "get_selected_vert": "list(filter(lambda v: v.select == True, bpy.context.object.data.vertices))"
+        "get_selected_vert": "list(map(lambda x: x.index, list(filter(lambda v: v.select == True, bpy.context.object.data.vertices))))"
     },
     "face_verts": {
         "desc": "Used to re-build faces if they're prematurely deleted",
