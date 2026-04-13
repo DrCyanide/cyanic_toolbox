@@ -1,7 +1,7 @@
 import bpy
 
 class FACEMESH_GENERAL_PT_Panel(bpy.types.Panel):
-    bl_label = "Facemesh"
+    bl_label = "Facemesh Management"
     bl_idname = "FACEMESH_GENERAL_PT_Panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'

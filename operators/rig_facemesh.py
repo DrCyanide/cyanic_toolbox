@@ -54,11 +54,13 @@ class RigFacemeshOperator(bpy.types.Operator):
         except:
             pass # No object selected, likely in object mode already
 
-        armature_obj = cu.selectObjectByName(armature.name, 'ARMATURE')
+        # armature_obj = cu.selectObjectByName(armature.name, 'ARMATURE')
+        armature_obj = cu.selectObject(armature)
         armature_world_matrix_inverted = armature_obj.matrix_world.inverted()
         bpy.ops.object.mode_set(mode='EDIT')
 
-        facemesh_obj = cu.findObjectByNameAndType(facemesh.name, 'MESH')
+        # facemesh_obj = cu.findObjectByNameAndType(facemesh.name, 'MESH')
+        facemesh_obj = cu.findObjectFromOther(facemesh)
         facemesh_world_matrix = facemesh_obj.matrix_world
         for bone_name in facemesh_config_data['bone_positions'].keys():
             if bone_name.lower() == 'desc':
@@ -84,13 +86,15 @@ class RigFacemeshOperator(bpy.types.Operator):
         missing_eyes = []
         if context.scene.cyanic_eye_left is not None:
             eye_bone_names.append('eye.L')
-            eye_objs.append(cu.findObjectByNameAndType(context.scene.cyanic_eye_left.name, 'MESH'))
+            # eye_objs.append(cu.findObjectByNameAndType(context.scene.cyanic_eye_left.name, 'MESH'))
+            eye_objs.append(cu.findObjectFromOther(context.scene.cyanic_eye_left))
         else:
             missing_eyes.append('eye.L')
 
         if context.scene.cyanic_eye_right is not None:
             eye_bone_names.append('eye.R')
-            eye_objs.append(cu.findObjectByNameAndType(context.scene.cyanic_eye_right.name, 'MESH'))
+            # eye_objs.append(cu.findObjectByNameAndType(context.scene.cyanic_eye_right.name, 'MESH'))
+            eye_objs.append(cu.findObjectFromOther(context.scene.cyanic_eye_right))
         else:
             missing_eyes.append('eye.R')
 
@@ -181,10 +185,12 @@ class ParentFacemeshToRigOperator(bpy.types.Operator):
             pass # If there's no object selected, it can't do either option
 
         # Select Facemesh
-        facemesh_obj = cu.selectObjectByName(context.scene.cyanic_facemesh.name, 'MESH')
+        # facemesh_obj = cu.selectObjectByName(context.scene.cyanic_facemesh.name, 'MESH')
+        facemesh_obj = cu.selectObject(context.scene.cyanic_facemesh)
 
         # Select Rig
-        armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+        # armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+        armature_obj = cu.selectObject(context.scene.cyanic_rigify_gen_rig, clear_old=False)
 
         # Parent it
         bpy.ops.object.parent_set(type='ARMATURE_AUTO')
@@ -204,7 +210,8 @@ class ParentMouthToRigOperator(bpy.types.Operator):
             pass # If there's no object selected, it can't do either option
 
     def clear_selected_bones(self):
-        armature_obj = cu.selectObjectByName(bpy.context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+        # armature_obj = cu.selectObjectByName(bpy.context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+        armature_obj = cu.selectObject(bpy.context.scene.cyanic_rigify_gen_rig, clear_old=False)
         for bone in bpy.data.objects[armature_obj.name].data.bones:
             bpy.data.objects[armature_obj.name].pose.bones[bone.name].bone.select = False
             bpy.data.objects[armature_obj.name].data.bones[bone.name].select = False
@@ -228,9 +235,11 @@ class ParentMouthToRigOperator(bpy.types.Operator):
         if context.scene.cyanic_mouth_top != None:
             self.clear_selected_objs()
             self.clear_selected_bones()
-            mouth_obj = cu.selectObjectByName(context.scene.cyanic_mouth_top.name, 'MESH')
+            # mouth_obj = cu.selectObjectByName(context.scene.cyanic_mouth_top.name, 'MESH')
+            mouth_obj = cu.selectObject(context.scene.cyanic_mouth_top)
             # Select Rig
-            armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+            # armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+            armature_obj = cu.selectObject(context.scene.cyanic_rigify_gen_rig, clear_old=False)
             # Select the bones inside the rig
             bpy.ops.object.mode_set(mode='POSE')
             bpy.ops.pose.select_all(action='DESELECT')
@@ -243,9 +252,11 @@ class ParentMouthToRigOperator(bpy.types.Operator):
         if context.scene.cyanic_mouth_bottom != None:
             self.clear_selected_objs()
             self.clear_selected_bones()
-            mouth_obj = cu.selectObjectByName(context.scene.cyanic_mouth_bottom.name, 'MESH')
+            # mouth_obj = cu.selectObjectByName(context.scene.cyanic_mouth_bottom.name, 'MESH')
+            mouth_obj = cu.selectObject(context.scene.cyanic_mouth_bottom)
             # Select Rig
-            armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+            # armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+            armature_obj = cu.selectObject(context.scene.cyanic_rigify_gen_rig, clear_old=False)
             # Select the bones inside the rig
             bpy.ops.object.mode_set(mode='POSE')
             bpy.ops.pose.select_all(action='DESELECT')
@@ -258,9 +269,11 @@ class ParentMouthToRigOperator(bpy.types.Operator):
         if context.scene.cyanic_mouth_tongue != None:
             self.clear_selected_objs()
             self.clear_selected_bones()
-            mouth_obj = cu.selectObjectByName(context.scene.cyanic_mouth_tongue.name, 'MESH')
+            # mouth_obj = cu.selectObjectByName(context.scene.cyanic_mouth_tongue.name, 'MESH')
+            mouth_obj = cu.selectObject(context.scene.cyanic_mouth_tongue)
             # Select Rig
-            armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+            # armature_obj = cu.selectObjectByName(context.scene.cyanic_rigify_gen_rig.name, 'ARMATURE', clear_old=False)
+            armature_obj = cu.selectObject(context.scene.cyanic_rigify_gen_rig, clear_old=False)
             # Select the bones inside the rig
             bpy.ops.object.mode_set(mode='POSE')
             bpy.ops.pose.select_all(action='DESELECT')

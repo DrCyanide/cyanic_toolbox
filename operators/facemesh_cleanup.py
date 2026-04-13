@@ -1,7 +1,9 @@
 import bpy
 import os
 import json
+from ..scripts import CyanicUtils
 
+cu = CyanicUtils()
 # data_dir = 'data'
 script_dir = os.path.dirname(__file__)
 data_dir = os.path.join(os.path.split(script_dir)[0], 'data')
@@ -15,28 +17,30 @@ def load_config():
         string_format = input_file.read()
         facemesh_config_data = json.loads(string_format)
 
-def findObjectByNameAndType(name, obj_type):
-    objects = [obj for obj in bpy.context.scene.objects if obj.type == obj_type and obj.data.name == name]
-    if len(objects) == 1:
-        return objects[0]
-    print('Found %s objects for %s, %s' % (len(objects), name, obj_type))
-    print(objects)
-    return objects[-1]
+# def findObjectByNameAndType(name, obj_type):
+#     objects = [obj for obj in bpy.context.scene.objects if obj.type == obj_type and obj.data.name == name]
+#     if len(objects) == 1:
+#         return objects[0]
+#     print('Found %s objects for %s, %s' % (len(objects), name, obj_type))
+#     print(objects)
+#     return objects[-1]
 
-def selectObject(name, obj_type):
-    try:
-        bpy.ops.object.mode_set(mode='OBJECT')
-        bpy.ops.object.select_all(action='DESELECT')
-    except:
-        pass # No object selected, likely already in object mode
-    obj = findObjectByNameAndType(name, obj_type)
-    bpy.context.view_layer.objects.active = obj # Active object is what transform_apply is interacting with
-    bpy.data.objects[obj.name].select_set(True)
-    return obj
+# def selectObject(name, obj_type):
+#     try:
+#         bpy.ops.object.mode_set(mode='OBJECT')
+#         bpy.ops.object.select_all(action='DESELECT')
+#     except:
+#         pass # No object selected, likely already in object mode
+#     obj = findObjectByNameAndType(name, obj_type)
+#     bpy.context.view_layer.objects.active = obj # Active object is what transform_apply is interacting with
+#     bpy.data.objects[obj.name].select_set(True)
+#     return obj
+
 
 
 def delete_faces(facemesh, face_vert_list):
-    selectObject(facemesh.name, 'MESH')
+    # selectObject(facemesh.name, 'MESH')
+    cu.selectObject(facemesh)
 
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_mode(type='VERT')
@@ -60,7 +64,8 @@ def delete_faces(facemesh, face_vert_list):
 
 
 def delete_edges(facemesh, edge_vert_list):
-    selectObject(facemesh.name, 'MESH')
+    # selectObject(facemesh.name, 'MESH')
+    cu.selectObject(facemesh)
 
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_mode(type='VERT')
@@ -83,7 +88,8 @@ def delete_edges(facemesh, edge_vert_list):
             facemesh.vertices[v].select = False
 
 def rebuild_faces(facemesh, face_vert_list):
-    selectObject(facemesh.name, 'MESH')
+    # selectObject(facemesh.name, 'MESH')
+    cu.selectObject(facemesh)
 
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_mode(type='VERT')
@@ -126,7 +132,8 @@ class FacemeshCleanupSmartSymmetrizeOperator(bpy.types.Operator):
         except:
             pass # Nothing selected
 
-        selectObject(facemesh.name, 'MESH')
+        # selectObject(facemesh.name, 'MESH')
+        cu.selectObject(facemesh)
 
         # Doing it simple for now
         #   * Assuming Mirroring over X
@@ -178,7 +185,8 @@ class FacemeshCleanupSymmetrizeOperator(bpy.types.Operator):
         except:
             pass # No object selected
 
-        selectObject(facemesh.name, 'MESH')
+        # selectObject(facemesh.name, 'MESH')
+        cu.selectObject(facemesh)
 
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.select_mode(type='VERT')

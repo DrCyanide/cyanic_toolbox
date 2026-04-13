@@ -141,7 +141,7 @@ def register_props():
     )
 
     bpy.types.Scene.cyanic_mouth_tongue = bpy.props.PointerProperty(
-        name="Mouth - Tongue",
+        name="Tongue",
         description="The tongue of the character",
         type=bpy.types.Mesh,
     )
@@ -211,9 +211,15 @@ def register():
     register_props()
 
     for cls in operator_classes: # Defined in operators/__init__.py
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except:
+            pass
     for cls in panel_classes: # Defined in panels/__init__.py
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except:
+            pass
 
 # Required to let Blender uninstall addon
 def unregister():

@@ -52,8 +52,19 @@ class CyanicUtils():
         return objects[-1]
     
     def findObjectFromOther(self, other):
+        # "other" is the bpy.context.scene.cyanic_* 
         other_uid = other.session_uid
-        return list(filter(lambda x: x.data.session_uid == other_uid, bpy.context.scene.objects))[0] # Should only throw an error if user deleted object
+
+        hits = list(filter(lambda x: x.data.session_uid == other_uid, bpy.context.scene.objects))
+        return hits[0] # Should only throw an error if user deleted object
+        # if len(hits) == 1:
+        #     return hits[0] # Should only throw an error if user deleted object
+        # elif len(hits) == 0:
+        #     # self.report({'ERROR_INVALID_INPUT'}, 'No matching object. Was it deleted?')
+        #     raise ValueError('No matching object. Was it deleted?')
+        # else:
+        #     # self.report({'ERROR_INVALID_INPUT'}, 'Multiple matching objects. Try "Make Local" to fix.')
+        #     raise ValueError('Multiple matching objects. Try "Make Local" to fix.')
 
     def deselectAll(self):
         starting_mode = 'OBJECT'
@@ -81,6 +92,12 @@ class CyanicUtils():
     def selectObject(self, object, clear_old=True):
         if clear_old:
             self.deselectAll()
-        bpy.context.view_layer.objects.active = object # Active object is what transform_apply is interacting with
-        object.select_set(True)
-        return object
+        try:
+            bpy.context.view_layer.objects.active = object # Active object is what transform_apply is interacting with
+            object.select_set(True)
+            return object
+        except:
+            obj = self.findObjectFromOther(object)
+            bpy.context.view_layer.objects.active = obj
+            obj.select_set(True)
+            return obj

@@ -5,7 +5,8 @@ from ..operators import FacemeshCleanupSymmetrizeOperator, FacemeshCleanupSmartS
 class FACEMESH_CLEANUP_PT_Panel(bpy.types.Panel):
     bl_label = "Cleanup Facemesh"
     bl_idname = "FACEMESH_CLEANUP_PT_Panel"
-    bl_parent_id = "FACEMESH_GENERAL_PT_Panel"
+    # bl_parent_id = "FACEMESH_GENERAL_PT_Panel"
+    bl_parent_id = "MESH_MANAGEMENT_PT_Panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     # bl_context = 'object'
